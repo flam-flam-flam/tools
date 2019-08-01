@@ -1,0 +1,70 @@
+syntax = "proto3";
+package com.ukelink.um.proto;
+
+import "clientinfo.proto";
+import "baseresponse.proto";
+
+message MessageUser {
+	int64 userId = 1;
+	string userName = 2;
+}
+
+message MessageUserList {
+	repeated MessageUser messageUser = 1;
+}
+
+message Data {
+	enum MessageType {
+		MESSAGE_ACTION_NONE = 0;
+		MESSAGE_ACTION_IM_TEXT = 1;
+		MESSAGE_ACTION_IM_IMAGE = 2;
+		MESSAGE_ACTION_IM_VIDEO = 3;
+		MESSAGE_ACTION_IM_AUDIO = 4;
+		MESSAGE_ACTION_REVOKE_IM = 5;
+		MESSAGE_ACTION_ADD_GROUP_MEMBER = 6;
+		MESSAGE_ACTION_DEL_GROUP_MEMBER = 7;
+		MESSAGE_ACTION_SET_GROUP_NAME = 8;
+		MESSAGE_ACTION_SET_GROUP_OWNER = 9;
+		MESSAGE_ACTION_CREATE_GROUP = 10;
+		MESSAGE_ACTION_MENTION_ALL = 11;
+		MESSAGE_ACTION_MENTION_USER = 12;
+	}
+	ClientInfo fromUser = 1; 
+	repeated ClientInfo toUser = 2;      
+	MessageType action = 3; 
+	string language = 4;  
+	string originalMsgId = 5;
+	string indexId = 6;  //serverMsgId
+	int64 messageTime = 7; 
+	bytes content = 8;   //可以填写actionMsgId   //修改群名称      
+	bytes thumbnailContent = 9;
+	string remoteContentUrl = 10;
+}
+
+message SendMessageRequest {
+	Data data = 1;
+}
+
+message SendMessageResponse {
+	BaseResponse baseResponse = 1;
+}
+
+message SyncMessageRequest {
+	string userId = 1;
+	string clientID = 2;
+	uint64 key = 3;
+	string mailId = 4;
+	string eventId = 5;
+	uint32 winSize = 6;	
+	int64 eventTime = 7;
+}
+
+message SyncMessageResponse {
+	message MessageData {
+		uint64 key = 1;
+		string mailId = 2;
+		repeated Data data = 3;
+	}
+	BaseResponse baseResponse = 1;
+	MessageData messageData = 2;
+}
