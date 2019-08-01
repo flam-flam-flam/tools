@@ -7,6 +7,7 @@ import com.ukelink.um.redis.RedisDAO;
 import com.ukelink.um.service.SendTemplateService;
 import com.ukelink.um.service.ToolFeignService;
 import com.ukelink.um.util.Md5Util;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -19,6 +20,7 @@ import java.util.List;
 import static com.ukelink.um.redis.LuaScript.TESTLUA;
 
 @RestController
+@Slf4j
 public class SendMessage {
     @Autowired
     private RedisDAO redisDAO;
@@ -77,6 +79,7 @@ public class SendMessage {
 
 //        String value = (String)redisDAO.luaEval(null,TESTLUA,null,keys,argv);
         System.out.println("value:" + value);
+        log.info("[lid:{}] createGroup() requestBody: {}", value, argv.toString());
         return Result;
     }
 }

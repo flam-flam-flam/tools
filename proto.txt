@@ -1,0 +1,11 @@
+TestProtocol.RichMan req = (TestProtocol.RichMan) msg;
+        System.out.println(req.getName() + "他有" + req.getCarsCount() + "量车:");
+        List<TestProtocol.RichMan.Car> lists = req.getCarsList();
+        if (null != lists) {
+
+            for (TestProtocol.RichMan.Car car : lists) {
+                System.out.println(car.getName() + "type" + car.getTypeValue());
+            }
+        }
+		
+		

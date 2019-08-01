@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="INFO" monitorInterval="60">
+    <properties>
+        <property name="LOG_HOME">logs</property>
+        <property name="FILE_NAME">tool</property>
+        <property name="log.sql.level">info</property>
+    </properties>
+
+    <Appenders>
+        <Console name="console" target="SYSTEM_OUT">
+            <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %l - %msg%n"/>
+        </Console>
+
+        <RollingRandomAccessFile
+            name="allLog"
+            fileName="${LOG_HOME}/${FILE_NAME}.log"
+            filePattern="${LOG_HOME}/${FILE_NAME}-%d{yyyy-MM-dd}_%i.log.gz">
+            <ThresholdFilter level="ALL" onMatch="ACCEPT" onMismatch="DENY"/>
+            <PatternLayout charset="UTF-8" pattern="%d{HH:mm:ss.SSS} [%t] %-5level %l - %msg%n"/>
+<!--            <Pattern>[um-account]%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level [%thread] [%file:%line] [%method] - %msg%n</Pattern>-->
+            <Policies>
+                <TimeBasedTriggeringPolicy interval="1"/>
+                <SizeBasedTriggeringPolicy size="100 MB"/>
+            </Policies>
+            <DefaultRolloverStrategy max="50"/>
+<!--            <DefaultRolloverStrategy max="50">-->
+<!--                <Delete basePath="./logs">-->
+<!--                    <IfFileName glob="um-account.log*"/>-->
+<!--                    <IfLastModified age="10d"/>-->
+<!--                </Delete>-->
+<!--            </DefaultRolloverStrategy>-->
+        </RollingRandomAccessFile>
+
+        <RollingRandomAccessFile
+            name="errorLog"
+            fileName="${LOG_HOME}/${FILE_NAME}-error.log"
+            filePattern="${LOG_HOME}/${FILE_NAME}-error-%d{yyyy-MM-dd}_%i.log.gz">
+            <ThresholdFilter level="ERROR" onMatch="ACCEPT" onMismatch="DENY"/>
+            <PatternLayout charset="UTF-8" pattern="%d{HH:mm:ss.SSS} [%t] %-5level %l - %msg%n"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy interval="1"/>
+                <SizeBasedTriggeringPolicy size="100 MB"/>
+            </Policies>
+            <DefaultRolloverStrategy max="50"/>
+        </RollingRandomAccessFile>
+
+    </Appenders>
+
+    <Loggers>
+        <Root level="info">
+            <AppenderRef ref="console"/>
+            <AppenderRef ref="allLog"/>
+            <AppenderRef ref="errorLog"/>
+        </Root>
+
+        <Logger name="com.ukelink.um.demotools" level="info" additivity="false">
+            <AppenderRef ref="console"/>
+            <AppenderRef ref="allLog"/>
+            <AppenderRef ref="errorLog"/>
+        </Logger>
+
+    </Loggers>
+
+</Configuration>
+
+
+<!--        <?xml version="1.0" encoding="UTF-8" ?>-->
+<!--<Configuration status="WARN" packages="com.ucloudlink.log.client.log4j.plugins">-->
+<!--<Appenders>-->
+<!--    <OssAppender name="OssAppender" target="SYSTEM_OUT">-->
+<!--        <PatternLayout pattern="[um-account]%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level [%thread] [%file:%line] [%method] - %msg%n" />-->
+<!--    </OssAppender>-->
+
+<!--    <RollingRandomAccessFile name="ErrorAppender"-->
+<!--                             fileName="./logs/um-account-error.log"-->
+<!--                             filePattern="./logs/um-account-error.%d{yyyy-MM-dd}_%i.log.gz">-->
+<!--        <PatternLayout>-->
+<!--            <Pattern>[um-account]%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level [%thread] [%file:%line] [%method] - %msg%n</Pattern>-->
+<!--        </PatternLayout>-->
+<!--        <Filters>-->
+<!--            <ThresholdFilter level="error" onMatch="accept" onMisMatch="deny"/>-->
+<!--        </Filters>-->
+<!--        <Policies>-->
+<!--            <TimeBasedTriggeringPolicy interval="1"/>-->
+<!--            <SizeBasedTriggeringPolicy size="100 MB" />-->
+<!--        </Policies>-->
+<!--        <DefaultRolloverStrategy max="50">-->
+<!--            <Delete basePath="./logs">-->
+<!--                <IfFileName glob="um-account-error.log*"/>-->
+<!--                <IfLastModified age="10d"/>-->
+<!--            </Delete>-->
+<!--        </DefaultRolloverStrategy>-->
+<!--    </RollingRandomAccessFile>-->
+
+<!--    <RollingRandomAccessFile name="NormalAppender"-->
+<!--                             fileName="./logs/um-account.log"-->
+<!--                             filePattern="./logs/um-account.%d{yyyy-MM-dd}_%i.log.gz">-->
+<!--        <PatternLayout>-->
+<!--            <Pattern>[um-account]%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level [%thread] [%file:%line] [%method] - %msg%n</Pattern>-->
+<!--        </PatternLayout>-->
+<!--        <Filters>-->
+<!--            <ThresholdFilter level="info" onMatch="accept" onMisMatch="deny"/>-->
+<!--        </Filters>-->
+<!--        <Policies>-->
+<!--            <TimeBasedTriggeringPolicy interval="1"/>-->
+<!--            <SizeBasedTriggeringPolicy size="100MB"/>-->
+<!--        </Policies>-->
+<!--        <DefaultRolloverStrategy max="50">-->
+<!--            <Delete basePath="./logs">-->
+<!--                <IfFileName glob="um-account.log*"/>-->
+<!--                <IfLastModified age="10d"/>-->
+<!--            </Delete>-->
+<!--        </DefaultRolloverStrategy>-->
+<!--    </RollingRandomAccessFile>-->
+<!--</Appenders>-->
+<!--<Loggers>-->
+<!--    <Logger name="org.springframework" level="info">-->
+<!--        <AppenderRef ref="OssAppender"/>-->
+<!--        <AppenderRef ref="NormalAppender"/>-->
+<!--        <AppenderRef ref="ErrorAppender"/>-->
+<!--    </Logger>-->
+<!--    <Root level="info">-->
+<!--        <AppenderRef ref="OssAppender"/>-->
+<!--        <AppenderRef ref="NormalAppender"/>-->
+<!--        <AppenderRef ref="ErrorAppender"/>-->
+<!--    </Root>-->
+<!--</Loggers>-->
+<!--</Configuration>-->
