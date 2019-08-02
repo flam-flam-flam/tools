@@ -1,0 +1,11 @@
+spring:
+  kafka:
+    consumer:
+      auto-offset-reset: latest
+      enable-auto-commit: false
+      auto-commit-interval: 5000
+      bootstrap-servers: 10.100.93.47:9092,10.100.93.48:9092
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      group-id: test-consumer-group
+      account-register: countload
