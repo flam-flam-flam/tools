@@ -1,0 +1,22 @@
+1、create database flam;
+2、use flam;
+3、CREATE TABLE table_a (id INT, name VARCHAR(100),age INT);
+4、INSERT INTO table_a values(22,'flam',2019);
+5、mybatis-generator-gui
+   1)如图mybatis.png
+   2)运行
+   3)在src\main\resources目录下生成mybatis\mapper\MapperTableA.xml
+	 在src\main\java\com\ukelink\um\entity目录下生成TableA.java
+	 在src\demotools\src\main\java\com\ukelink\um\dao目录下生成MapperTableA.java和MyBatisBaseDao.java
+   4）修改MapperTableA.java和MyBatisBaseDao.java
+6、启动类上加 @MapperScan("com.ukelink.um.dao")
+7、配置文件
+spring:
+  application:
+    name: um-tool
+  datasource:
+    url: jdbc:mysql://10.100.93.47:3306/flam?useUnicode=true&characterEncoding=utf-8&useSSL=false
+    username: root  #数据库用户名
+    password: admin #数据库密码
+mybatis:
+  mapper-locations: classpath:mybatis/mapper/*.xml

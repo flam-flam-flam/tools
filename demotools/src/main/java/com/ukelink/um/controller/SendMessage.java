@@ -2,6 +2,8 @@ package com.ukelink.um.controller;
 
 import cn.hutool.core.codec.Base64Decoder;
 import com.google.protobuf.InvalidProtocolBufferException;
+import com.ukelink.um.dao.MapperTableA;
+import com.ukelink.um.entity.TableA;
 import com.ukelink.um.proto.Message;
 import com.ukelink.um.redis.RedisDAO;
 import com.ukelink.um.service.SendTemplateService;
@@ -28,6 +30,9 @@ public class SendMessage {
 //    private RestTemplateService restTemplateService;
     @Autowired
     private SendTemplateService sendTemplateService;
+    @Autowired
+    private MapperTableA mapperTableA;
+
     @Autowired
     private ToolFeignService toolFeignService;
     @RequestMapping("/um/message/send")
@@ -76,7 +81,11 @@ public class SendMessage {
         List<String> argv = new ArrayList<>();
         argv.add("2345");
         String value = (String)redisDAO.luaEvalSha1(null,TESTLUA,"lua22222",keys,argv);
-
+        TableA tableA = new TableA();
+        tableA.setAge(12);
+        tableA.setId(44);
+        tableA.setName("fanzhe");
+        mapperTableA.insert(tableA);
 //        String value = (String)redisDAO.luaEval(null,TESTLUA,null,keys,argv);
         System.out.println("value:" + value);
         log.info("[lid:{}] createGroup() requestBody: {}", value, argv.toString());
