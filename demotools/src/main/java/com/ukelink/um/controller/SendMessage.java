@@ -9,6 +9,7 @@ import com.ukelink.um.redis.RedisDAO;
 import com.ukelink.um.service.SendTemplateService;
 import com.ukelink.um.service.ToolFeignService;
 import com.ukelink.um.util.Md5Util;
+import javafx.scene.control.Tab;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -82,10 +83,15 @@ public class SendMessage {
         argv.add("2345");
         String value = (String)redisDAO.luaEvalSha1(null,TESTLUA,"lua22222",keys,argv);
         TableA tableA = new TableA();
-        tableA.setAge(12);
-        tableA.setId(44);
-        tableA.setName("fanzhe");
+        tableA.setAge(16);
+        tableA.setId(66);
+        tableA.setName("quhao");
         mapperTableA.insert(tableA);
+        List<TableA> tableB = mapperTableA.select();
+        for(TableA i: tableB)
+        {
+            log.info("id:{} name:{} age:{}",i.getId(),i.getName(),i.getAge());
+        }
 //        String value = (String)redisDAO.luaEval(null,TESTLUA,null,keys,argv);
         System.out.println("value:" + value);
         log.info("[lid:{}] createGroup() requestBody: {}", value, argv.toString());
