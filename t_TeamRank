@@ -1,4 +1,4 @@
-CREATE TABLE `t_TeamRank` (
+CREATE TABLE `t_teamrank` (
   `Id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键id',
   `Teamname` VARCHAR(64) DEFAULT NULL COMMENT '球队名称',
   `Teamrank` VARCHAR(64) DEFAULT NULL COMMENT '球队排名',
