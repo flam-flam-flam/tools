@@ -1,0 +1,312 @@
+package proc
+
+import (
+	"fmt"
+	"github.com/PuerkitoBio/goquery"
+	"github.com/hu17889/go_spider/core/common/page"
+	"github.com/hu17889/go_spider/core/pipeline"
+	"github.com/hu17889/go_spider/core/spider"
+	"strconv"
+	"strings"
+	"tesou.io/platform/foot-parent/foot-api/common/base"
+	"tesou.io/platform/foot-parent/foot-api/module/match/pojo"
+	entity3 "tesou.io/platform/foot-parent/foot-api/module/odds/pojo"
+	service2 "tesou.io/platform/foot-parent/foot-core/module/odds/service"
+	"tesou.io/platform/foot-parent/foot-spider/module/win007"
+	"tesou.io/platform/foot-parent/foot-spider/module/win007/down"
+	"time"
+)
+
+type MatchHistoryEuroProcesser struct {
+	service2.HistoryEuroService
+	MatchlastUrl string
+	//入参
+	//是否是单线程
+	SingleThread  bool
+	MatchLastList []*pojo.MatchLast
+	MatchId string
+	Mark string
+	//博彩公司对应的win007id
+	CompWin007Ids      []string
+	BaseUrl []string
+	Win007idMatchidMap map[string]string
+}
+
+func GetMatchHistoryEuroProcesser() *MatchHistoryEuroProcesser {
+	processer := &MatchHistoryEuroProcesser{}
+	processer.Init()
+	return processer
+}
+
+func (this *MatchHistoryEuroProcesser) Init() {
+	//初始化参数值
+	this.Win007idMatchidMap = map[string]string{}
+}
+
+func (this *MatchHistoryEuroProcesser) Setup(temp *MatchHistoryEuroProcesser) {
+	//设置参数值
+	this.CompWin007Ids = temp.CompWin007Ids
+}
+
+func (this *MatchHistoryEuroProcesser) Startup() {
+
+	var newSpider *spider.Spider
+	processer := this
+	newSpider = spider.NewSpider(processer, "MatchHistoryEuroProcesser")
+	//for i, v := range this.MatchLastList {
+	//
+	//	if !this.SingleThread && i%1000 == 0 { //10000个比赛一个spider,一个赛季大概有30万场比赛,最多30spider
+	//		//先将前面的spider启动
+	//		newSpider.SetDownloader(down.NewMWin007Downloader())
+	//		newSpider = newSpider.AddPipeline(pipeline.NewPipelineConsole())
+	//		newSpider.SetSleepTime("rand", win007.SLEEP_RAND_S, win007.SLEEP_RAND_E)
+	//		newSpider.SetThreadnum(10).Run()
+	//
+	//		processer = GetMatchHistoryEuroProcesser()
+	//		processer.Setup(this)
+	//		newSpider = spider.NewSpider(processer, "MatchHistoryEuroProcesser"+strconv.Itoa(i))
+	//	}
+	//
+	//	temp_flag := v.Ext[win007.MODULE_FLAG]
+	//	bytes, _ := json.Marshal(temp_flag)
+	//	matchExt := new(pojo.MatchExt)
+	//	json.Unmarshal(bytes, matchExt)
+	//	win007_id := matchExt.Sid
+	//	processer.Win007idMatchidMap[win007_id] = v.Id
+	//
+	//	base_url := strings.Replace(win007.WIN007_EUROODD_BET_URL_PATTERN, "${scheid}", win007_id, 1)
+	//	for _, v := range processer.CompWin007Ids {
+	//		url := strings.Replace(base_url, "${cId}", v, 1)
+	//		newSpider = newSpider.AddUrl(url, "html")
+	//	}
+	//}
+	newSpider = newSpider.AddUrl(this.MatchlastUrl,"html")
+
+	newSpider.SetDownloader(down.NewMWin007Downloader())
+	newSpider = newSpider.AddPipeline(pipeline.NewPipelineConsole())
+	newSpider.SetSleepTime("rand", win007.SLEEP_RAND_S, win007.SLEEP_RAND_E)
+	newSpider.SetThreadnum(1).Run()
+
+}
+
+func (this *MatchHistoryEuroProcesser) findParamVal(url string, paramName string) string {
+	paramUrl := strings.Split(url, "?")[1]
+	paramArr := strings.Split(paramUrl, "&")
+	for _, v := range paramArr {
+		if strings.Contains(v, paramName) {
+			return strings.Split(v, "=")[1]
+		}
+	}
+	return ""
+}
+
+func (this *MatchHistoryEuroProcesser) Process(p *page.Page) {
+	request := p.GetRequest()
+	if !p.IsSucc() {
+		base.Log.Error("URL:", request.Url, p.Errormsg())
+		return
+	}
+    
+	current_year := time.Now().Format("2006")
+	
+	league_node := p.GetHtmlParser().Find("div[class='league']")
+	var matchTime string
+	var matchinfo string
+	league_node.Each(func(l int, selection0 *goquery.Selection) {
+		matchinfo = strings.TrimSpace(selection0.Text())
+
+	})
+	if matchinfo != ""{
+		leagueList := strings.Fields(matchinfo)
+		if len(leagueList) >= 3{
+			matchTime = current_year + "-" + leagueList[1] + " " + leagueList[2] + ":00"
+		}
+	}
+	t1,_ := time.Parse("2006-01-02 15:04:05",matchTime)
+	fmt.Println(t1)
+	//var sp3 float64
+	var count float64
+	var one float64
+	var two float64
+	//sp3 = 0
+	count = 0
+	one = 0
+	two = 0
+
+	//win007_matchId := this.findParamVal(request.Url, "scheid")
+	//matchId := this.Win007idMatchidMap[win007_matchId]
+
+	win007_betCompId := this.findParamVal(request.Url, "cId")
+
+	var track_list = make([]*entity3.Matchhistoryeuro202181, 0)
+	dstEuro := new(entity3.Matchhistoryeuro202181)
+	dstEuro.Matchid = this.MatchId
+	dstEuro.Compid, _ = strconv.Atoi(win007_betCompId)
+
+	table_node := p.GetHtmlParser().Find(" table.mytable3 tr")
+	table_node.Each(func(i int, selection *goquery.Selection) {
+		if i < 2 {
+			return
+		}
+
+		track := new(entity3.Matchhistoryeuro202181)
+		track_list = append(track_list, track)
+		track.Matchid = this.MatchId
+		track.Compid, _ = strconv.Atoi(win007_betCompId)
+
+		td_list_node := selection.Find(" td ")
+		td_list_node.Each(func(ii int, selection *goquery.Selection) {
+			val := strings.TrimSpace(selection.Text())
+			if "" == val {
+				return
+			}
+
+			switch ii {
+			case 0:
+				temp, _ := strconv.ParseFloat(val, 64)
+				track.Sp3 = temp
+			case 1:
+				temp, _ := strconv.ParseFloat(val, 64)
+				track.Sp1 = temp
+			case 2:
+				temp, _ := strconv.ParseFloat(val, 64)
+				track.Sp0 = temp
+			case 3:
+				temp, _ := strconv.ParseFloat(val, 64)
+				track.Spayout = temp
+			case 4:
+				selection.Children().Each(func(iii int, selection *goquery.Selection) {
+					val := selection.Text()
+					switch iii {
+					case 0:
+						temp, _ := strconv.ParseFloat(val, 64)
+						track.Sk3 = temp
+					case 1:
+						temp, _ := strconv.ParseFloat(val, 64)
+						track.Sk1 = temp
+					case 2:
+						temp, _ := strconv.ParseFloat(val, 64)
+						track.Sk0 = temp
+					}
+				})
+			case 5:
+				var month_day string
+				var hour_minute string
+				selection.Children().Each(func(iii int, selection *goquery.Selection) {
+					val := selection.Text()
+					switch iii {
+					case 0:
+						month_day = val
+					case 1:
+						hour_minute = val
+					}
+				})
+				track.Ext = current_year + "-" + month_day + " " + hour_minute + ":00"
+				track.Sodddate,_ = time.Parse("2006-01-02 15:04:05",track.Ext)
+			}
+		})
+		t2,_ := time.Parse("2006-01-02 15:04:05",track.Ext)
+		diff := t1.Sub(t2).Minutes()
+		fmt.Print(t2)
+		fmt.Print(" ")
+		fmt.Print(diff)
+		fmt.Print(" ")
+		fmt.Println(track.Sp3)
+
+		if diff>=50&& diff <= 130{
+			dstEuro.Averagep3 = dstEuro.Averagep3 + track.Sp3
+			dstEuro.Averagep1 = dstEuro.Averagep1 + track.Sp1
+			dstEuro.Averagep0 = dstEuro.Averagep0 + track.Sp0
+			dstEuro.Averagek3 = dstEuro.Averagek3 + track.Sk3
+			dstEuro.Averagek1 = dstEuro.Averagek1 + track.Sk1
+			dstEuro.Averagek0 = dstEuro.Averagek0 + track.Sk0
+			dstEuro.Averagepayout = dstEuro.Averagepayout + track.Spayout
+			count++
+		}
+		if diff >=60 && one == 0{
+			one = track.Sp3
+			dstEuro.Onep3 = track.Sp3
+			dstEuro.Onep1 = track.Sp1
+			dstEuro.Onep0 = track.Sp0
+			dstEuro.Onek3 = track.Sk3
+			dstEuro.Onek1 = track.Sk1
+			dstEuro.Onek0 = track.Sk0
+			dstEuro.Oneodddate = track.Sodddate
+			dstEuro.Onepayout = track.Spayout
+
+		}
+		if diff >=120 && two == 0{
+			two = track.Sp3
+			dstEuro.Twop3 = track.Sp3
+			dstEuro.Twop1 = track.Sp1
+			dstEuro.Twop0 = track.Sp0
+			dstEuro.Twok3 = track.Sk3
+			dstEuro.Twok1 = track.Sk1
+			dstEuro.Twok0 = track.Sk0
+			dstEuro.Twoodddate = track.Sodddate
+			dstEuro.Twopayout = track.Spayout
+		}
+	})
+	//average := (sp3/count)
+	dstEuro.Averagep3 = Decimal(dstEuro.Averagep3 / count)
+	dstEuro.Averagep1 = Decimal(dstEuro.Averagep1 / count)
+	dstEuro.Averagep0 = Decimal(dstEuro.Averagep0 / count)
+	dstEuro.Averagek3 = Decimal(dstEuro.Averagek3 / count)
+	dstEuro.Averagek1 = Decimal(dstEuro.Averagek1 / count)
+	dstEuro.Averagek0 = Decimal(dstEuro.Averagek0 / count)
+	dstEuro.Averagepayout = Decimal(dstEuro.Averagepayout / count)
+	//fmt.Print(sp3)
+	//fmt.Print("count: ")
+	//fmt.Print(count)
+	//fmt.Print("average: ")
+	////fmt.Print(average)
+	//fmt.Print("one: ")
+	//fmt.Print(one)
+	//fmt.Print("two: ")
+	//fmt.Println(two)
+	if len(track_list)>0 {
+		dstEuro.Sp3 = track_list[len(track_list)-1].Sp3
+		dstEuro.Sp1 = track_list[len(track_list)-1].Sp1
+		dstEuro.Sp0 = track_list[len(track_list)-1].Sp0
+		dstEuro.Sk3 = track_list[len(track_list)-1].Sk3
+		dstEuro.Sk1 = track_list[len(track_list)-1].Sk1
+		dstEuro.Sk0 = track_list[len(track_list)-1].Sk0
+		dstEuro.Spayout = track_list[len(track_list)-1].Spayout
+		dstEuro.Sodddate = track_list[len(track_list)-1].Sodddate
+
+		dstEuro.Ep3 = track_list[0].Sp3
+		dstEuro.Ep1 = track_list[0].Sp1
+		dstEuro.Ep0 = track_list[0].Sp0
+		dstEuro.Ek3 = track_list[0].Sk3
+		dstEuro.Ek1 = track_list[0].Sk1
+		dstEuro.Ek0 = track_list[0].Sk0
+		dstEuro.Epayout = track_list[0].Spayout
+		dstEuro.Eodddate = track_list[0].Sodddate
+
+	}
+	dstEuro.Mark=this.Mark
+	dstEuro.Createtime=time.Now()
+	dstEuro.Updatetime=time.Now()
+	fmt.Print("dstEuro:")
+
+	fmt.Println(dstEuro)
+	this.track_process(dstEuro)
+}
+
+func (this *MatchHistoryEuroProcesser) track_process(track *entity3.Matchhistoryeuro202181) {
+	if track ==nil ||track.Sp3==0{
+		return
+	}
+	this.HistoryEuroService.Save(track)
+
+}
+
+func (this *MatchHistoryEuroProcesser) Finish() {
+	base.Log.Info("欧赔历史抓取解析完成 \r\n")
+
+}
+
+func Decimal(value float64) float64{
+	value,_ = strconv.ParseFloat(fmt.Sprintf("%.3f",value),64)
+	return value
+}
