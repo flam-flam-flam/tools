@@ -1,0 +1,11 @@
+CREATE TABLE `t_TeamRank` (
+  `Id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键id',
+  `Teamname` VARCHAR(64) DEFAULT NULL COMMENT '球队名称',
+  `Teamrank` VARCHAR(64) DEFAULT NULL COMMENT '球队排名',
+  `Ranktime` datetime DEFAULT NULL COMMENT '排名时间',
+  `Createtime` datetime DEFAULT now() COMMENT '创建时间',
+  `Updatetime` datetime DEFAULT now() COMMENT '更新时间',
+  PRIMARY KEY(`Id`),
+  KEY `Teamname_idx` (`Teamname`),
+  KEY `CreateTime_idx` (`Createtime`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='排名表';
