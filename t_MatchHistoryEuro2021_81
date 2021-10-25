@@ -1,4 +1,4 @@
-CREATE TABLE `t_MatchHistoryEuro2021_81` (
+CREATE TABLE `t_matchhistoryeuro202181` (
   `Id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键Id',
   `Compid` int(11) DEFAULT NULL,
   `Matchid` varchar(20) DEFAULT NULL,
