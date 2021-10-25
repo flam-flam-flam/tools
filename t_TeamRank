@@ -6,6 +6,6 @@ CREATE TABLE `t_teamrank` (
   `Createtime` datetime DEFAULT now() COMMENT '创建时间',
   `Updatetime` datetime DEFAULT now() COMMENT '更新时间',
   PRIMARY KEY(`Id`),
-  KEY `Teamname_idx` (`Teamname`),
+  UNIQUE KEY `Teamname_idx` (`Teamname`),
   KEY `CreateTime_idx` (`Createtime`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='排名表';
