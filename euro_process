@@ -53,14 +53,14 @@ current_year := time.Now().Format("2006")
 		fmt.Print(" ")
 		fmt.Println(track.Sp3)
 
-		if diff>=55&& diff <= 125{
+		if diff>=50&& diff <= 130{
 			sp3= sp3 + track.Sp3
 			count++
 		}
 		if diff >=60 && one == 0{
 			one = track.Sp3
 		}
-		if diff >=200 && two == 0{
+		if diff >=120 && two == 0{
 			two = track.Sp3
 		}
 	})
