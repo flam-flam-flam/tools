@@ -1,0 +1,78 @@
+current_year := time.Now().Format("2006")
+	league_node := p.GetHtmlParser().Find("div[class='league']")
+	var matchTime string
+	var matchinfo string
+	league_node.Each(func(l int, selection2 *goquery.Selection) {
+		matchinfo = strings.TrimSpace(selection2.Text())
+		if matchinfo != ""{
+			leagueInfo := strings.Fields(matchinfo)
+			if len(leagueInfo) >= 3{// 这里很重要，是大于等于3
+				matchTime =  current_year + "-" + leagueInfo[1] + " " + leagueInfo[2] + ":00"
+			}
+		}
+	})
+
+	t1,_ := time.Parse("2006-01-02 15:04:05",matchTime)
+	fmt.Println(t1)
+	var sp3 float64
+	var count float64
+	var one float64
+	var two float64
+	sp3 = 0
+	count = 0
+	one = 0
+	two = 0
+	win007_matchId := this.findParamVal(request.Url, "scheid")
+	matchId := this.Win007idMatchidMap[win007_matchId]
+
+
+
+      
+      
+      
+      case 5:
+				var month_day string
+				var hour_minute string
+				selection.Children().Each(func(iii int, selection *goquery.Selection) {
+					val := selection.Text()
+					switch iii {
+					case 0:
+						month_day = val
+					case 1:
+						hour_minute = val
+					}
+				})
+				track.OddDate = current_year + "-" + month_day + " " + hour_minute + ":00"
+			}
+		})
+		t2,_ := time.Parse("2006-01-02 15:04:05",track.OddDate)
+		diff := t1.Sub(t2).Minutes()
+		fmt.Print(t2)
+		fmt.Print(" ")
+		fmt.Print(diff)
+		fmt.Print(" ")
+		fmt.Println(track.Sp3)
+
+		if diff>=55&& diff <= 125{
+			sp3= sp3 + track.Sp3
+			count++
+		}
+		if diff >=60 && one == 0{
+			one = track.Sp3
+		}
+		if diff >=200 && two == 0{
+			two = track.Sp3
+		}
+	})
+	average := (sp3/count)
+	fmt.Print(sp3)
+	fmt.Print("count: ")
+	fmt.Print(count)
+	fmt.Print("average: ")
+	fmt.Print(average)
+	fmt.Print("one: ")
+	fmt.Print(one)
+	fmt.Print("two: ")
+	fmt.Println(two)
+	this.MatchResult = "2222222"
+	this.track_process(track_list)
