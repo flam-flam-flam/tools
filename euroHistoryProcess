@@ -223,7 +223,7 @@ func (this *MatchHistoryEuroProcesser) Process(p *page.Page) {
 			dstEuro.Averagepayout = dstEuro.Averagepayout + track.Spayout
 			count++
 		}
-		if diff >=60 && one == 0{
+		if diff >=60 && diff<=120 && one == 0{
 			one = track.Sp3
 			dstEuro.Onep3 = track.Sp3
 			dstEuro.Onep1 = track.Sp1
@@ -235,7 +235,7 @@ func (this *MatchHistoryEuroProcesser) Process(p *page.Page) {
 			dstEuro.Onepayout = track.Spayout
 
 		}
-		if diff >=120 && two == 0{
+		if diff >=120 && diff<=185 && two == 0{
 			two = track.Sp3
 			dstEuro.Twop3 = track.Sp3
 			dstEuro.Twop1 = track.Sp1
