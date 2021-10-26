@@ -10,7 +10,7 @@ CREATE TABLE `t_matchtoday` (
   `Createtime` datetime DEFAULT now() COMMENT '创建时间',
   `Updatetime` datetime DEFAULT now() COMMENT '更新时间',
   PRIMARY KEY (`Id`),
-  KEY `matchId_idx` (`Matchid`),
+  UNIQUE KEY `matchId_idx` (`Matchid`),
   KEY `MatchTime_idx` (`Matchtime`),
   KEY `CreateTime_idx` (`Createtime`),
   KEY `LeagueName_idx` (`Leaguename`),
