@@ -1,0 +1,19 @@
+CREATE TABLE `t_matchtoday` (
+  `Id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键Id',
+  `Leagueid` varchar(64) COMMENT '',
+  `Leaguename` varchar(64) COMMENT '',
+  `Matchid` varchar(20) COMMENT '',
+  `Matchtime` datetime DEFAULT NULL COMMENT '日期',
+  `Hostname` varchar(64) DEFAULT NULL COMMENT '',
+  `Customername` varchar(64) DEFAULT NULL COMMENT '',
+  `Mark` varchar(20) DEFAULT NULL COMMENT '备注',
+  `Createtime` datetime DEFAULT now() COMMENT '创建时间',
+  `Updatetime` datetime DEFAULT now() COMMENT '更新时间',
+  PRIMARY KEY (`Id`),
+  KEY `matchId_idx` (`Matchid`),
+  KEY `MatchTime_idx` (`Matchtime`),
+  KEY `CreateTime_idx` (`Createtime`),
+  KEY `LeagueName_idx` (`Leaguename`),
+  KEY `HostName_idx` (`Hostname`),
+  KEY `CustomerName_idx` (`Customername`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='即将表';
