@@ -1,0 +1,3 @@
+当前目录下必须有config、struct.go.tpl这两个文件，然后在当前目录下执行
+
+D:\src\go\bin\xorm.exe reverse mysql root:123456@tcp(10.100.93.53:3306)/foot?charset=utf8 .
