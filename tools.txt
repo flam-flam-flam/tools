@@ -1,3 +1,4 @@
 goland 快捷键安装：setting|plugins 搜索  /tag:Keymap
 
-matchid 添加唯一性索引，euro表中添加matchtime字段，matchInfo（历史和现在）添加预测结果字段
+matchid 添加唯一性索引，euro表中添加matchtime字段，matchInfo（历史和现在）添加预测结果字段preMark
+
