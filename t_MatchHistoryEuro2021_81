@@ -35,6 +35,14 @@ CREATE TABLE `t_matchhistoryeuro202181` (
   `Twok0` double DEFAULT NULL,
   `Twopayout` double DEFAULT NULL COMMENT '率',
   `Twoodddate` datetime DEFAULT NULL COMMENT '数据时间',
+  `Threep3` double DEFAULT NULL COMMENT 'Ep3',
+  `Threep1` double DEFAULT NULL COMMENT 'Ep1',
+  `Threep0` double DEFAULT NULL COMMENT 'Ep0',
+  `Threek3` double DEFAULT NULL,
+  `Threek1` double DEFAULT NULL,
+  `Threek0` double DEFAULT NULL,
+  `Threepayout` double DEFAULT NULL COMMENT '率',
+  `Threeodddate` datetime DEFAULT NULL COMMENT '数据时间',
   `Averagep3` double DEFAULT NULL COMMENT 'Ep3',
   `Averagep1` double DEFAULT NULL COMMENT 'Ep1',
   `Averagep0` double DEFAULT NULL COMMENT 'Ep0',
@@ -53,6 +61,7 @@ CREATE TABLE `t_matchhistoryeuro202181` (
   KEY `IDX_t_euro_his_Ep3` (`Ep3`,`Ep1`,`Ep0`),
   KEY `IDX_t_euro_his_Onep` (`Onep3`,`Onep1`,`Onep0`),
   KEY `IDX_t_euro_his_Twop` (`Twop3`,`Twop1`,`Twop0`),
+  KEY `IDX_t_euro_his_Threep` (`Threep3`,`Threep1`,`Threep0`),
   KEY `IDX_t_euro_his_Averagep` (`Averagep3`,`Averagep1`,`Averagep0`),
   KEY `IDX_t_euro_his_CreateTime` (`Createtime`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
