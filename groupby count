@@ -1,0 +1,22 @@
+
+
+
+
+func GroupBy(){
+
+	testService := new(mysql.TestDb)
+	item := make([]*pojo.TestName, 0)
+	//item := &pojo2.TestCount{}
+	sql := "SELECT Name,count(*) as Total FROM t_test_name GROUP BY Name"
+	testService.FindSql(sql,&item)
+}
+
+
+func (this *TestDb)  FindSql(entity string,datalist interface{})  {
+	engine := GetEngine()
+
+	engine.SQL(entity).Find(datalist)
+	//results, _ :=engine.QueryString(entity)
+	fmt.Println(datalist)
+	return
+}
