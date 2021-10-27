@@ -1,4 +1,6 @@
 goland 快捷键安装：setting|plugins 搜索  /tag:Keymap
 
-matchid 添加唯一性索引，euro表中添加matchtime字段，matchInfo（matchhistory历史和matchtoday现在）添加预测结果字段premark，premarks,pretime
+matchid 添加唯一性索引，
+euro表中添加matchtime字段，胜负平添加方差(Averagesqr3、Averagesqr1、Averagesqr0)和标准差（Averagestd3、Averagestd1、Averagestd0）字段
+matchInfo（matchhistory历史和matchtoday现在）添加预测结果字段premark，premarks,pretime
 
