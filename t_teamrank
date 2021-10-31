@@ -3,8 +3,8 @@ CREATE TABLE `t_teamrank` (
   `Teamname` varchar(64) DEFAULT NULL COMMENT '球队名称',
   `Teamrank` varchar(64) DEFAULT NULL COMMENT '球队排名',
   `Ranktime` datetime DEFAULT NULL COMMENT '排名时间',
-  `Createtime` datetime DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-  `Updatetime` datetime DEFAULT CURRENT_TIMESTAMP COMMENT '更新时间',
+  `Createtime` datetime DEFAULT now() COMMENT '创建时间',
+  `Updatetime` datetime DEFAULT now() COMMENT '更新时间',
   PRIMARY KEY (`Id`),
   UNIQUE KEY `Teamname_idx` (`Teamname`),
   KEY `CreateTime_idx` (`Createtime`)
