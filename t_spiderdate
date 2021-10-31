@@ -1,0 +1,11 @@
+CREATE TABLE `t_spiderdate` (
+  `Id` bigint NOT NULL AUTO_INCREMENT COMMENT '主键id',
+  `Spiderdate` varchar(64) DEFAULT NULL COMMENT '日期',
+  `Createtime` datetime DEFAULT now() COMMENT '创建时间',
+  `Updatetime` datetime DEFAULT now() COMMENT '更新时间',
+  PRIMARY KEY (`Id`),
+  KEY `Spiderdate_idx` (`Spiderdate`),
+  KEY `CreateTime_idx` (`Createtime`)
+) ENGINE=InnoDB AUTO_INCREMENT=168 DEFAULT CHARSET=utf8mb3 COMMENT='spider日期';
+
+insert into t_spiderdate(Spiderdate) values('20210101')
