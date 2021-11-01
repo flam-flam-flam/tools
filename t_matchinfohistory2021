@@ -16,13 +16,13 @@ CREATE TABLE `t_matchinfohistory2021` (
   `Aisa` varchar(20) DEFAULT NULL COMMENT '亚盘初盘',
   `Overunder` varchar(20) DEFAULT NULL COMMENT '大小球初盘',
   `Mark` varchar(20) DEFAULT NULL COMMENT '备注',
-  `Premark` varchar(20) DEFAULT NULL COMMENT '预测结果',
+  `Premark` varchar(36) DEFAULT NULL COMMENT '预测结果',
   `Premarks` varchar(255) DEFAULT NULL COMMENT '预测结果集',
   `Preoverunders` varchar(255) DEFAULT NULL COMMENT '预测大小球',
-  `Halfmark` varchar(20) DEFAULT NULL COMMENT '备注',
-  `Prehalfmark` varchar(20) DEFAULT NULL COMMENT '预测结果',
-  `Prehalfmarks` varchar(255) DEFAULT NULL COMMENT '预测结果集',
-  `Prehalfoverunders` varchar(255) DEFAULT NULL COMMENT '预测大小球',
+	`Markhalf` varchar(20) DEFAULT NULL COMMENT '备注',
+  `Premarkhalf` varchar(36) DEFAULT NULL COMMENT '预测结果',
+  `Premarkshalf` varchar(255) DEFAULT NULL COMMENT '预测结果集',
+  `Preoverundershalf` varchar(255) DEFAULT NULL COMMENT '预测大小球',
   `Pretime` datetime DEFAULT NULL COMMENT '创建时间',
   `Ext` varchar(255) DEFAULT NULL COMMENT '扩展',
   `Createtime` datetime DEFAULT now() COMMENT '创建时间',
@@ -36,4 +36,4 @@ CREATE TABLE `t_matchinfohistory2021` (
   KEY `CustomerName_idx` (`Customername`),
   KEY `Aisa_idx` (`Aisa`),
   KEY `Overunder_idx` (`Overunder`)
-) ENGINE=InnoDB AUTO_INCREMENT=502 DEFAULT CHARSET=utf8mb3 COMMENT='基本信息表';
+) ENGINE=InnoDB AUTO_INCREMENT=41 DEFAULT CHARSET=utf8mb3 COMMENT='基本信息表';
