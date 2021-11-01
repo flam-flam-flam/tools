@@ -3,6 +3,6 @@ goland 快捷键安装：setting|plugins 搜索  /tag:Keymap
 matchid 添加唯一性索引， 
 
 euro表中添加matchtime字段，胜负平添加标准差（Averagestdp3、Averagestdp1、Averagestdp0、Averagestdk3、Averagestdk1、Averagestdk0）字段。方差的平方根称为标准差
-matchInfo（matchhistory历史和matchtoday现在）添加预测结果字段premark，premarks,pretime
+matchInfo（matchhistory历史和matchtoday现在）添加预测结果字段premark，premarks,pretime,halfMark,prehalfmark,prehalfMarks
 
 对比分析参考
