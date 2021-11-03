@@ -15,6 +15,9 @@
   2）执行sql脚本文件
   3）admin项目redis配置
   4）admin项目mysql配置
+ 
+ idea运行ruoyi-admin
+ hbuilderx运行ruoyi-ui
   
   
 4、win7 redis安装启动（https://github.com/ServiceStack/redis-windows）
