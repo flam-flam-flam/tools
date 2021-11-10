@@ -1,0 +1,9 @@
+左侧导航  layout/sidebar/index.vue
+左侧导航入口  components/hamburger/index.vue
+顶部导航  components/topnav/index.vue (默认没开）
+
+
+系统配置 settings.js
+每个页面父组件都是Layout
+
+axios http请求 /utils/request
