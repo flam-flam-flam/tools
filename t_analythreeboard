@@ -14,3 +14,13 @@ CREATE TABLE `t_analythreeboard` (
   KEY `IDX_threeboardcomp` (`Threeboardcomp`),
   KEY `IDX_createTime` (`Createtime`)
 ) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8 COMMENT='三木板分析记录表';
+
+
+
+
+INSERT INTO `foot`.`t_analythreeboard`(`Id`, `Matchid`, `Threeboardcomp`, `Threeboardeuro`, `Threeboardasia`, `Premarkfasia`, `Premarkeuro`, `Createtime`, `Updatetime`, `Mark`) VALUES (5, '555', '2_80_81', '8-1-1', '8-2', '3', '3', '2021-11-12 18:50:28', '2021-11-12 18:50:28', '3');
+INSERT INTO `foot`.`t_analythreeboard`(`Id`, `Matchid`, `Threeboardcomp`, `Threeboardeuro`, `Threeboardasia`, `Premarkfasia`, `Premarkeuro`, `Createtime`, `Updatetime`, `Mark`) VALUES (6, '666', '2_80_81', '8-1-1', '8-2', '3', '3', '2021-11-12 18:50:28', '2021-11-12 18:50:28', '3');
+INSERT INTO `foot`.`t_analythreeboard`(`Id`, `Matchid`, `Threeboardcomp`, `Threeboardeuro`, `Threeboardasia`, `Premarkfasia`, `Premarkeuro`, `Createtime`, `Updatetime`, `Mark`) VALUES (7, '777', '2_80_81', '8-1-2', '8-2', '1', '0', '2021-11-12 18:50:28', '2021-11-12 18:50:28', '0');
+INSERT INTO `foot`.`t_analythreeboard`(`Id`, `Matchid`, `Threeboardcomp`, `Threeboardeuro`, `Threeboardasia`, `Premarkfasia`, `Premarkeuro`, `Createtime`, `Updatetime`, `Mark`) VALUES (8, '888', '2_80_81', '8-1-1', '8-2', '1', '0', '2021-11-12 18:50:28', '2021-11-12 18:50:28', '3');
+INSERT INTO `foot`.`t_analythreeboard`(`Id`, `Matchid`, `Threeboardcomp`, `Threeboardeuro`, `Threeboardasia`, `Premarkfasia`, `Premarkeuro`, `Createtime`, `Updatetime`, `Mark`) VALUES (9, '999', '2_80_82', '8-1-1', '8-2', '3', '3', '2021-11-12 18:50:28', '2021-11-12 18:50:28', '3');
+
