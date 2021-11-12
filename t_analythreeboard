@@ -24,3 +24,19 @@ INSERT INTO `foot`.`t_analythreeboard`(`Id`, `Matchid`, `Threeboardcomp`, `Three
 INSERT INTO `foot`.`t_analythreeboard`(`Id`, `Matchid`, `Threeboardcomp`, `Threeboardeuro`, `Threeboardasia`, `Premarkfasia`, `Premarkeuro`, `Createtime`, `Updatetime`, `Mark`) VALUES (8, '888', '2_80_81', '8-1-1', '8-2', '1', '0', '2021-11-12 18:50:28', '2021-11-12 18:50:28', '3');
 INSERT INTO `foot`.`t_analythreeboard`(`Id`, `Matchid`, `Threeboardcomp`, `Threeboardeuro`, `Threeboardasia`, `Premarkfasia`, `Premarkeuro`, `Createtime`, `Updatetime`, `Mark`) VALUES (9, '999', '2_80_82', '8-1-1', '8-2', '3', '3', '2021-11-12 18:50:28', '2021-11-12 18:50:28', '3');
 
+
+
+SELECT Premarkfasia,Mark,COUNT(*) from t_analythreeboard2 where threeboardcomp='2_80_81' GROUP BY Mark,Premarkfasia;
+
+3胜 1平负 0负  4 胜平
+
+
+
+
+
+
+
+
+
+
+
