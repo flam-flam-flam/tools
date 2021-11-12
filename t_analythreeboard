@@ -11,7 +11,6 @@ CREATE TABLE `t_analythreeboard` (
   `Mark` varchar(20) DEFAULT NULL COMMENT '结果',
   PRIMARY KEY (`Id`),
   UNIQUE KEY `IDX_t_euro_his_MatchId` (`Matchid`),
-  KEY `IDX_threeboardeuro` (`Threeboardeuro`),
-  KEY `IDX_threeboardasia` (`Threeboardasia`),
+  KEY `IDX_threeboardcomp` (`Threeboardcomp`),
   KEY `IDX_createTime` (`Createtime`)
 ) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8 COMMENT='三木板分析记录表';
