@@ -24,4 +24,4 @@
 
 10、新建t_Companythree、t_Companytwo组合表
 
-11、表名改成t_Eurothreeboard
+11、t_Threeboard表名改成t_Eurothreeboard
