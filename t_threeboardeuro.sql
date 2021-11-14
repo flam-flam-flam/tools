@@ -1,5 +1,5 @@
-drop table t_threeboard;
-CREATE TABLE `t_Threeboard` (
+drop table t_threeboardeuro;
+CREATE TABLE `t_threeboardeuro` (
   `Id` bigint NOT NULL AUTO_INCREMENT COMMENT '主键Id',
   `Matchid` varchar(20) DEFAULT NULL,
   `S2p3` double DEFAULT NULL COMMENT 'Sp3',
