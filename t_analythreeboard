@@ -2,23 +2,24 @@ CREATE TABLE `t_threeboardanaly` (
   `Id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键Id',
   `Matchid` varchar(20) DEFAULT NULL,
   `Threeboardcomp` varchar(64) DEFAULT NULL COMMENT 'compid1_compid2_compid3', 
+	`Moment` varchar(64) DEFAULT NULL COMMENT '时刻', 
   `Counteuro` varchar(64) DEFAULT NULL COMMENT '胜-平-负',
   `Countasia` varchar(64) DEFAULT NULL COMMENT '上盘-下盘',
   `Premarkfasia` varchar(20) DEFAULT NULL COMMENT '预测结果-上盘下盘',
   `Premarkeuro` varchar(20) DEFAULT NULL COMMENT '预测结果-精确',
-  `Weightasia` varchar(64) DEFAULT NULL COMMENT '权重',
-  `Weighteuro` varchar(64) DEFAULT NULL COMMENT '权重',
-  `Confidenceasia` varchar(64) DEFAULT NULL COMMENT '信息值',
-  `Confidenceeuro` varchar(64) DEFAULT NULL COMMENT '信息值',
+	`Weightasia` varchar(64) DEFAULT NULL COMMENT '权重',
+	`Weighteuro` varchar(64) DEFAULT NULL COMMENT '权重',
+	`Confidenceasia` varchar(64) DEFAULT NULL COMMENT '信息值',
+	`Confidenceeuro` varchar(64) DEFAULT NULL COMMENT '信息值',
   `Createtime` datetime DEFAULT now() COMMENT '创建时间',
   `Updatetime` datetime DEFAULT now() COMMENT '更新时间',
   `Mark` varchar(20) DEFAULT NULL COMMENT '结果',
+	`ext` varchar(64) DEFAULT NULL COMMENT '扩展',
   PRIMARY KEY (`Id`),
   UNIQUE KEY `IDX_t_euro_his_MatchId` (`Matchid`),
-  KEY `IDX_threeboardcomp` (`Threeboardcomp`),
+  KEY `IDX_threeboardcomp_Moment` (`Threeboardcomp`,`Moment`),
   KEY `IDX_createTime` (`Createtime`)
 ) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8 COMMENT='三木板分析记录表';
-
 
 
 
