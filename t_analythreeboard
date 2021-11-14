@@ -1,4 +1,4 @@
-CREATE TABLE `t_analythreeboard` (
+CREATE TABLE `t_Threeboardanaly` (
   `Id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键Id',
   `Matchid` varchar(20) DEFAULT NULL,
   `Threeboardcomp` varchar(64) DEFAULT NULL COMMENT 'compid1_compid2_compid3', 
