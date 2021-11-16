@@ -123,4 +123,14 @@ CREATE TABLE `t_threeboardeuro` (
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb3 COMMENT='三木板';
 
 
+ALTER table t_threeboardeuro ADD INDEX idx_s80p3 (s80p3);
+ALTER table t_threeboardeuro ADD INDEX idx_s80p0 (s80p0);
+ALTER table t_threeboardeuro ADD INDEX idx_one80p3 (one80p3);
+ALTER table t_threeboardeuro ADD INDEX idx_one80p0 (one80p0);
+ALTER table t_threeboardeuro ADD INDEX idx_two80p3 (two80p3);
+ALTER table t_threeboardeuro ADD INDEX idx_two80p0 (two80p0);
+ALTER table t_threeboardeuro ADD INDEX idx_Average12h80p3 (Average12h80p3);
+ALTER table t_threeboardeuro ADD INDEX idx_Average12h80p0 (Average12h80p0);
+
+
 INSERT INTO `foot`.`t_threeboard` (`Id`, `Matchid`, `S2p3`, `S2p0`, `S2k3`, `S2k0`, `One2p3`, `One2p0`, `One2k3`, `One2k0`, `Two2p3`, `Two2p0`, `Two2k3`, `Two2k0`, `Average12h2p3`, `Average12h2p0`, `Average12h2k3`, `Average12h2k0`, `S80p3`, `S80p0`, `S80k3`, `S80k0`, `One80p3`, `One80p0`, `One80k3`, `One80k0`, `Two80p3`, `Two80p0`, `Two80k3`, `Two80k0`, `Average12h80p3`, `Average12h80p0`, `Average12h80k3`, `Average12h80k0`, `S81p3`, `S81p0`, `S81k3`, `S81k0`, `One81p3`, `One81p0`, `One81k3`, `One81k0`, `Two81p3`, `Two81p0`, `Two81k3`, `Two81k0`, `Average12h81p3`, `Average12h81p0`, `Average12h81k3`, `Average12h81k0`, `S82p3`, `S82p0`, `S82k3`, `S82k0`, `One82p3`, `One82p0`, `One82k3`, `One82k0`, `Two82p3`, `Two82p0`, `Two82k3`, `Two82k0`, `Average12h82p3`, `Average12h82p0`, `Average12h82k3`, `Average12h82k0`, `S115p3`, `S115p0`, `S115k3`, `S115k0`, `One115p3`, `One115p0`, `One115k3`, `One115k0`, `Two115p3`, `Two115p0`, `Two115k3`, `Two115k0`, `Average12h115p3`, `Average12h115p0`, `Average12h115k3`, `Average12h115k0`, `S177p3`, `S177p0`, `S177k3`, `S177k0`, `One177p3`, `One177p0`, `One177k3`, `One177k0`, `Two177p3`, `Two177p0`, `Two177k3`, `Two177k0`, `Average12h177p3`, `Average12h177p0`, `Average12h177k3`, `Average12h177k0`, `S281p3`, `S281p0`, `S281k3`, `S281k0`, `One281p3`, `One281p0`, `One281k3`, `One281k0`, `Two281p3`, `Two281p0`, `Two281k3`, `Two281k0`, `Average12h281p3`, `Average12h281p0`, `Average12h281k3`, `Average12h281k0`, `Createtime`, `Updatetime`, `Mark`) VALUES (3057, '1965907', 1.51, 5.1, 0.86, 0.77, 1.51, 5.1, 0.86, 0.77, 1.6, 8.6, 0.91, 1.29, 1.56, 7.71, 0.89, 1.16, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2021-11-12 00:43:03', '2021-11-12 00:43:03', NULL);
