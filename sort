@@ -1,0 +1,53 @@
+package main
+
+import (
+	"fmt"
+)
+
+func main() {
+	e2 := make([]*Entity2,0)
+	e2_1 := new(Entity2)
+	e1_1 := new(Entity1)
+	e1_1.K3=88
+	e1_1.K1=89
+	e1_1.K0=92
+	e2_1.E1=append(e2_1.E1,e1_1)
+	e2_1.Name= "first"
+	e2=append(e2,e2_1)
+
+	e2_2 := new(Entity2)
+	e1_2 := new(Entity1)
+	e1_2.K3=99
+	e1_2.K1=96
+	e1_2.K0=92
+	e2_2.E1=append(e2_2.E1,e1_2)
+	e2_2.Name= "second"
+	e2=append(e2,e2_2)
+
+	e2_3 := new(Entity2)
+	e1_3 := new(Entity1)
+	e1_3.K3=92
+	e1_3.K1=90
+	e1_3.K0=95
+	e2_3.E1=append(e2_3.E1,e1_3)
+	e2_3.Name= "third"
+	e2=append(e2,e2_3)
+
+	for _, e22 := range e2 {
+		for _, e221 := range e22.E1 {
+			if(e221.K3>=e221.K1 && e221.K1>e221.K0){
+				fmt.Println(e22.Name + "排序: 310" )
+			}else if(e221.K3>=e221.K0 && e221.K0>=e221.K1){
+				fmt.Println(e22.Name + "排序: 301" )
+			}else if(e221.K1>=e221.K0 && e221.K0>=e221.K3){
+				fmt.Println(e22.Name + "排序: 103" )
+			}else if(e221.K1>=e221.K3 && e221.K3>=e221.K0){
+				fmt.Println(e22.Name + "排序: 130" )
+			}else if(e221.K0>=e221.K3 && e221.K3>=e221.K1){
+				fmt.Println(e22.Name + "排序: 031" )
+			}else if(e221.K0>=e221.K1 && e221.K1>=e221.K3){
+				fmt.Println(e22.Name + "排序: 013" )
+			}
+		}
+	}
+}
