@@ -36,3 +36,34 @@ feign优先级高于ribbon
 7、springboot如何加载自定义的配置文件
 方法一，通过@PropertySource注解
 方法二，实现environmentpostprocessor接口，在postprocessEnvironment使用properties.load方法中加载自定义配置文件。还要在spring.factories中启用我们的自定义环境处理类org.springframework.boot.env.enviromentPostProcessor=实现类
+
+
+
+8、springboot常用注解
+1)springbootApplication是一个复合注解，包含了@SpringBootConfiguration @EnableAutoConfiguration @ComponentScan这三个注解。  		  
+	springbootconfiguration继承自@Configuration；	EnableAutoConfiguration注解，开启自动配置功能，将所有符合条件的Configuration配置都加载到当前SpringBoot创建并使用的Ioc容器，借助于Spring框架原有的一个工具类：springfactoriesLoader的支持。
+	@componentScan,主要用于组件扫描和自动装配，我们可以通过basepackages等属性指定@ComponentScan自动扫描的范围，默认不指定，从@ComponentScan所在类的package进行扫描。
+	
+2）Controller控制器，处理http请求
+3）RestController，复合注解相当于@ResponseBody+@Controller合在一起的作用，RestController使用的效果是将方法返回的对象直接在浏览器上展示成json格式
+4）@RequestParam用来处理content-type为application/x-www-form-urlencoded,content-type默认为该属性，获取请求参数的值。请求示例：http://localhost:8080/User/getUser?uid=123
+5）@RequestBody接收的参数是来自requestBody，即请求体，一般用于处理非content-type；application/x-www-form-urlencoded编码格式的数据，如application/json
+6)RequestMapping是spring web应用程序中最常被用到的注解之一。这个注解会将HTTP请求映射到处理方法上
+7）GetMapping用于将http get请求映射到特定处理程序的方法 注解.@RequestMapping(value="/say“，method=requestMethod.GET)等价于：@GetMapping(value="/say")
+8）@postmapping用于将http post请求映射到特定处理程序的方法注解
+9）@PathVariable：获取url中的数据
+10）@RequestHeader 把request请求header部分的值绑定到方法的参数上
+11）@Repository，DAO层注解
+12）@Service用于标注服务层组件，标识定义一个bean，名称默认为当前的类名，首字母小写。 还可以通过@Service("serviceBeanId")或@Service(value="serviceBeanId")指定
+13）@scope作用域注解，作用在类上和方法上，用来配置spring bean的作用域，它标识bean的作用域。 singleton单例模式：全局有且只有一个实例；prototype原型模式：每次获取bean的时候会有一个新的实例； request标识针对每一次http请求都会产生一个新的bean，同时该bean仅在当前http request内有效； session作用域标识针对每一个http请求都会产生一个新的bean，同时改bean尽在当前http session内有效
+14）@Entity实体类注解
+15）@bean产生一个bean的方法，明确地指示了一种方法，产生一个bean的方法，并且交给spring容器管理。
+16）@autowire自动导入，作用在构造函数、方法、方法参数、类字段
+17）@component
+18）@propertysource
+19）@importResource导入xml配置文件
+20）@import导入额外的配置信息，可以导入带有@configuration直接的配置类
+21）transactional事务注解。在spring中，事务有两种实现方式，编程时事务管理和声明式事务管理。
+    编程式事务管理使用transactionTemplate；声明式事务管理建立在AOP之上的，其本质是对方法前后进行拦截，然后再目标方法开始之前创建或者加入一个事务，再执行万目标方法之后根据执行情况提交或者回滚事务，通过Transactional就可以进行事务操作
+22）controllerAdvice 统一异常处理
+23）@ExceptionHandler注解声明异常处理方法
