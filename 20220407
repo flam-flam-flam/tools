@@ -67,3 +67,38 @@ feign优先级高于ribbon
     编程式事务管理使用transactionTemplate；声明式事务管理建立在AOP之上的，其本质是对方法前后进行拦截，然后再目标方法开始之前创建或者加入一个事务，再执行万目标方法之后根据执行情况提交或者回滚事务，通过Transactional就可以进行事务操作
 22）controllerAdvice 统一异常处理
 23）@ExceptionHandler注解声明异常处理方法
+
+
+
+9、mybatis的动态sql标签
+if/where/trim/chooose/when/otherwise/foreach
+
+10、http和https的区别
+http是超文本传输协议，信息是明文传输，https则是具有安全性的ssl加密传输协议
+
+11、https的工作流程如下
+1）tcp三次同步握手
+2）客户端发送client_hello
+3）服务器发送client_hello，tls协议版本version、加密套件、压缩算法、随机数
+4）服务器发送证书
+5）服务端发送server key Exchange（加密算法，不一定发送，RSA算法就进行该流程）
+6）服务器发送server hello done
+7）客户端发送自己的公钥参数，加密算法
+8）服务端发送new session ticket 服务器给客户端一个会话，用处就是在一段时间之内，双方都以协商的密钥进行通信
+9）服务端发送change_cipher_spec，告诉客户端密钥有效
+10）服务端发送encrypted_handshake_message客诉客户端可以正常加解密
+11）完成密钥协商，开始发送数据
+12）完成数据发送。
+
+12、https证书内容都包含哪些内容
+电子签证机关的信息，公钥用户信息、公钥，权威机构的签字和有效期，签发日期等
+
+
+
+13、jvm的内存结构大概分为
+1）堆，线程共享。所有的对象实例以及数组都要在堆上分配。回收器主要管理的对象。 堆的作用是存放对象实例和数组。从结构上来看，可以分为新生代和老年代。而老年大又可以分为Eden空间、From Survivor空间、To survivor空间。所有新生成的对象首先都是放在新生代的，需要注意，survivor两个区是对称的，没有先后关系，所以同一个区中可能同时存在从Eden复制过来的对象和从前一个survivor复制过来的对象，而复制到老年代的只有从第一个survivor去过来的对象，而且survivor区总有一个是空的。 -Xms设置堆的最小空间大小。 -Xmx设置堆的最大空间大小。 -XX:NewSize设置新生代最小空间大小。 -XX:MaxNewSize设置新生代最小空间大小。此区域是垃圾回收的主要操作区域。
+
+2）方法区：线程共享。 存储类信息、常量、静态变量，即时编译器编译后的代码。控制参数-XX:PermSize设置最小空间 -XXMaxPermSize设置最大空间
+3）方法栈：线程私有。存储局部变量表，操作栈、动态链接、方法出口，对象指针。-Xss控制每个线程栈的大小
+4）本地方法栈：线程私有。为虚拟机使用到的Native方法服务。和方法栈（虚拟机栈一样）本地方法栈区域也会抛出StackOverflowError（尾递归、死循环）和OutOfMemoryError异常
+5）程序技术器：线程私有，它可以看做是当前线程所执行的字节码的行号指示器，指向下一条要执行的指令。此内存区域是唯一一个在java虚拟机规范中没有规定任何outofmemoryerror情况的区域。
