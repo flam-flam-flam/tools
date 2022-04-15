@@ -162,5 +162,68 @@ dubbo的工作线程触发了线程拒绝后，主要做三个事情：1）打�
 24、什么时候触发拒绝策略：当提交的任务数大于corePoolSize时，会优先放到队列缓冲区，只有填满了缓冲区后，才会判断当前运行的任务是否大于maxpoolSize，小于是会新建线程处理。大于时就出发了拒绝策略。  总结就是：当前提交任务数大于maxpoolsize+queuecapacity时就会触发线程池的拒绝策略了。
 
 
-25、java线程池
+25、java线程池。Executors提供了4种不同的线程池可供使用。
+1）newCachedthreadPool创建一个可缓存的线程池，若线程数超过处理所需，缓存一段时间后会回收，若线程数不够，则新建线程
+2）newfixedthreadpool,创建一个固定大小的线程池，可控制并发的线程数，超出的线程会在队列中等待
+3）newScheduledThreadpool，创建一个周期性的线程池，支持定时及周期性执行任务。
+4）newSingleThreadExecute，创建一个单线程的线程池。
+
+通过ThreadPoolExecutor类自定义,参数如下：
+corePoolSize：核心线程数
+maximumPoolSize：最大线程数
+keepaliveTime线程没有任务执行执行时最多保持多久时间停止
+unit：时间单位
+workQueue：一个阻塞队列，用来存储等待执行的任务（ArrayBlockqueue有界、LinkedBlockingQueue有界、delayQueue延迟获取无界队列、synchronousQueue（一个不存储元素的阻塞队列）、priorityblockingQueue支持排序的无界队列、LinkedTransferQueue链表无界队列，多了transfer和trytransfer方法、linkedblockingDeque链表双向阻塞队列）
+threadFactory：线程工厂
+handler：拒绝策略（abortPolicy、callerRunsPolicy、DiscardOldestpolicy、DiscardPolicy）
+
+
+26、java中的集合，线程安全的集合
+collection和map，collection有两个重要的子接口，list和set，其中list有序可重复，set无序不可重复，list接口的主要实现类有arrayList（可以通过索引来访问集合中的指定元素）和LinkedList，set接口的主要实现类有hashset和treeset。   map用于储存键值对，并且key是唯一的，map的主要实现类有hashmap和treemap
+
+ConcurrentHashMap和HashTable都是线程安全的集合，他们的不同主要是加锁力度上的不同，hashTable的加锁方法是给每个方法加上synchronized关键字，这样锁住的是整个Table对象，而ConcurrentHashMap是更细粒度的加锁。在1.8以前是segment锁，在1.8以后是行锁。
+
+
+27、collection集合遍历
+1）Iterator迭代器，如果调用remove的方法删除元素，会出现异常，原因是集合中删除元素会导致迭代次数发生改变，导致迭代器的结果不准确。
+2）foreach，不能对集合中元素进行修改
+3）for
+
+hashset是set接口的一个实现类，它所存储的元素是不可重复的，并且元素都是无序的。当向HashSet结合中添加元素时，首先会调用hashcode方法来确定元素的存储位置，然后再调用元素对象的equals方法来确保该位置没有重复元素。  向集合中存入元素时，为了保证hashSet正常工作，要求在存入对象时，需要重写object类中的hashcode()和equals()方法。String类已经默认重写了hashCode的方法。
+
+TreeSet采用平衡二叉树来存储元素，这样的结构可以保证TreeSet集合中没有重复的元素，且可以排序
+
+
+Map集合遍历：
+1）使用Iterator迭代器遍历： 有两种方法keySet和entrySet。keySet方法需要将Map集合中所有的键对象转换为Set单列集合，接着将含键对象的Set集合转换为Iterator接口对象，然后遍历。entrySet方法将原有的Map集合中的兼职作为一个整体返回set集合进行遍历
+2）foreach方法遍历
+	
+
+28、arrayList的扩容机制
+
+
+29、currenthashmap 1）key和value是否可以为空，底层的数据结构，数组、链表、红黑树。 节点的value和next字段使用volatile修饰，保证了可见性，写数据使用了CAS。
+2）hashmap数组长度必须是2的n次幂，为了使用与运算（效率比取余高）；还为了扩容时方便数据迁移运算数据迁移。如果在创建的时候给的不是2的n次幂，也会被转换成2的n次幂
+3）构造方法不创建数组，put的时候创建
+
+
+4）红黑树（最长不超过最短子树两倍） ，查询性能和插入性能的平衡点
+
+
+5）ReentrantLock是可重入锁，一个线程可以多次获取同一个锁。需要手工获取锁和释放锁。可以指定是公平锁还是非公平锁，所谓公平锁就是先等待的线程先获得锁。  ReenTrantLock的实现是一种自旋锁，通过循环调用CAS操作来实现加锁。
+
+6）synchronize也是可重入锁，锁的计数器都自增1，所以要等到锁的计数器下降为0时才能释放锁。便利，有编译器保证加锁和释放锁。非公平锁，随机唤醒一个线程或者唤醒所有线程。
+
+7）CAS
+
+8）自旋锁
+
+9）LinkedBlockingQueue相当于是普通的LinkedList加上ReentrantLock，而ReentrantLock内部都是靠CAS来实现原子性。而CAS在高并发时因为线程会不停重试
+
+
+30、双亲委派
+
+
+31、复写equals准则
+自反性，x.equals（x）为true，对称性，传递性， 一致性（多次比较，结果一样），非空性。
 
