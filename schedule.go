@@ -98,7 +98,7 @@ func Spider_euroLast() {
 		time.AfterFunc(time.Second*time.Duration(d), Spider_euroLast)
 	}else if(minuteDiff>=0 && minuteDiff<=10){
 		rand.Seed(time.Now().Unix())
-		d := rand.Intn(20) + 110
+		d := rand.Intn(20) + 150
 		time.AfterFunc(time.Second*time.Duration(d), Spider_euroLast)
 	}else{
 		rand.Seed(time.Now().Unix())
