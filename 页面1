@@ -23,7 +23,7 @@
         <td><font color="red"> {{ .MainTeamId }} </font> </td>
         <td>{{ .GuestTeamId }} </td>
         <td>{{ .MatchDate }} </td>
-        <td><a href="/show?id={{ .Id }}">详情</a></td>
+        <td><a href="/show?id={{ .Id }}&flesh={{ .Flesh }}">详情</a></td>
         <td><a href="/line?id={{ .Id }}" target="_blank">图形</a></td>
         <td><a href="https://live.nowscore.com/1x2/{{ .Id }}.htm" target="_blank">跳转</a></td>
         <td><a href="/delete?id={{ .Id }}">删除</a><td>
