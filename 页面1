@@ -1,0 +1,35 @@
+{{ define "Index" }}
+  {{ template "Header" }}
+    {{ template "Menu"  }}
+    <table border="2">
+      <thead>
+      <tr>
+        <td>ID</td>
+        <td>联赛名称</td>
+        <td>主队</td>
+        <td>客队</td>
+        <td>比赛时间</td>
+        <td>View</td>
+        <td>Line</td>
+        <td>score</td>
+        <td>Delete</td>
+      </tr>
+       </thead>
+       <tbody>
+    {{ range . }}
+      <tr>
+        <td>{{ .Id }}</td>
+        <td>{{ .LeagueName }}</td>
+        <td><font color="red"> {{ .MainTeamId }} </font> </td>
+        <td>{{ .GuestTeamId }} </td>
+        <td>{{ .MatchDate }} </td>
+        <td><a href="/show?id={{ .Id }}">详情</a></td>
+        <td><a href="/line?id={{ .Id }}" target="_blank">图形</a></td>
+        <td><a href="https://live.nowscore.com/1x2/{{ .Id }}.htm" target="_blank">跳转</a></td>
+        <td><a href="/delete?id={{ .Id }}">删除</a><td>
+      </tr>
+    {{ end }}
+       </tbody>
+    </table>
+  {{ template "Footer" }}
+{{ end }}
