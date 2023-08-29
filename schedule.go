@@ -92,21 +92,17 @@ func Spider_euroLast() {
 	//	time.AfterFunc(time.Second*time.Duration(d), Spider_euroLast)
 	//}
 
-	if(minuteDiff<=2){
+	if(minuteDiff>=27){
 		rand.Seed(time.Now().Unix())
-		d := rand.Intn(10) + 10*60
+		d := rand.Intn(20) + 10*60
 		time.AfterFunc(time.Second*time.Duration(d), Spider_euroLast)
-	}else if(minuteDiff>2 && minuteDiff<=10){
+	}else if(minuteDiff>=0 && minuteDiff<=10){
 		rand.Seed(time.Now().Unix())
-		d := rand.Intn(25) + 110
-		time.AfterFunc(time.Second*time.Duration(d), Spider_euroLast)
-	}else if(minuteDiff>=17 && minuteDiff<20){
-		rand.Seed(time.Now().Unix())
-		d := rand.Intn(100) + 3*60
+		d := rand.Intn(20) + 110
 		time.AfterFunc(time.Second*time.Duration(d), Spider_euroLast)
 	}else{
 		rand.Seed(time.Now().Unix())
-		d := rand.Intn(10) + 10*60
+		d := rand.Intn(30) + (minuteDiff-10)*60
 		time.AfterFunc(time.Second*time.Duration(d), Spider_euroLast)
 	}
 
