@@ -15,7 +15,6 @@ import (
 )
 
 /*func main() {
-	//执行抓取比赛欧赔数据
 	Before_spider_euroLast()
 	Spider_euroLast()
 }*/
