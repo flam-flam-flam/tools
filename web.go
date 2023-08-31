@@ -211,13 +211,13 @@ func HandleData(dataList []norm, matchId string,CompCount int){
 	itemsbwinGuestP := make([]opts.LineData, 0) //bw
 
 	var i int
-	if len(dataList) < 10{
+	if len(dataList) < 15{
 		if(len(dataList) == 0){
 			return
 		}
 		i = len(dataList)-1
 	}else {
-		i = 9
+		i = 14
 	}
 
 	//fruits = append(fruits, "000000")
