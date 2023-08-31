@@ -104,7 +104,7 @@ var tmpl = template.Must(template.ParseGlob("D:/foot-master/foot-web/service/for
 
 func Index(w http.ResponseWriter, r *http.Request) {
 	db := dbConn()
-	selDB, err := db.Query("SELECT la.Id,la.MainTeamId,la.GuestTeamId,la.MatchDate,tl.Name FROM foot.t_match_his la left join t_league tl  ON la.LeagueId=tl.Id WHERE MatchDate > DATE_SUB(NOW(),INTERVAL 2200 MINUTE) AND MatchDate < DATE_ADD(NOW(), INTERVAL 3 HOUR) ORDER BY MatchDate ASC")
+	selDB, err := db.Query("SELECT la.Id,la.MainTeamId,la.GuestTeamId,la.MatchDate,tl.Name FROM foot.t_match_his la left join t_league tl  ON la.LeagueId=tl.Id WHERE MatchDate > DATE_SUB(NOW(),INTERVAL 120 MINUTE) AND MatchDate < DATE_ADD(NOW(), INTERVAL 147 MINUTE) ORDER BY MatchDate ASC")
 	if err != nil {
 		panic(err.Error())
 	}
@@ -202,6 +202,14 @@ func HandleData(dataList []norm, matchId string,CompCount int){
 	itemsweideGuestNorm := make([]opts.LineData, 0) //weide
 	itemsweideGuestP := make([]opts.LineData, 0) //weide
 
+
+	itemsbwinMainNorm := make([]opts.LineData, 0) //bwin
+	itemsbwinMainP := make([]opts.LineData, 0) //bwin
+	itemsbwinMiddleNorm := make([]opts.LineData, 0) //bwin
+	itemsbwinMiddleP := make([]opts.LineData, 0) //bwin
+	itemsbwinGuestNorm := make([]opts.LineData, 0) //bwin
+	itemsbwinGuestP := make([]opts.LineData, 0) //bwin
+
 	var i int
 	if len(dataList) < 10{
 		if(len(dataList) == 0){
@@ -264,16 +272,24 @@ func HandleData(dataList []norm, matchId string,CompCount int){
 		itemsweideMiddleP = append(itemsweideMiddleP, opts.LineData{Value: dataList[i].PrinMiddleP})
 		itemsweideGuestP = append(itemsweideGuestP, opts.LineData{Value: dataList[i].PrinGuestP})
 
+		//bwin
+		itemsbwinMainNorm = append(itemsbwinMainNorm, opts.LineData{Value: dataList[i].B365MainNorm})
+		itemsbwinMiddleNorm = append(itemsbwinMiddleNorm, opts.LineData{Value: dataList[i].B365MiddleNorm})
+		itemsbwinGuestNorm = append(itemsbwinGuestNorm, opts.LineData{Value: dataList[i].B365GuestNorm})
+		itemsbwinMainP = append(itemsbwinMainP, opts.LineData{Value: dataList[i].B365MainP})
+		itemsbwinMiddleP = append(itemsbwinMiddleP, opts.LineData{Value: dataList[i].B365MiddleP})
+		itemsbwinGuestP = append(itemsbwinGuestP, opts.LineData{Value: dataList[i].B365GuestP})
+
 	}
 
 	page := components.NewPage()
 	page.AddCharts(
-		lineMainN(items12BetMainNorm,fruits,itemsYiMainNorm,itemsYingLiMainNorm,CompCount,itemsweideMainNorm),
-		lineMainP(items12BetMainP,fruits,itemsYiMainP,itemsYingLiMainP,CompCount,itemsweideMainP),
-		lineMiddleN(items12BetMiddleNorm,fruits,itemsYiMiddleNorm,itemsYingLiMiddleNorm,CompCount,itemsweideMiddleNorm),
-		lineMiddleP(items12BetMiddleP,fruits,itemsYiMiddleP,itemsYingLiMiddleP,CompCount,itemsweideMiddleP),
-		lineGuestN(items12BetGuestNorm,fruits,itemsYiGuestNorm,itemsYingLiGuestNorm,CompCount,itemsweideGuestNorm),
-		lineGuestP(items12BetGuestP,fruits,itemsYiGuestP,itemsYingLiGuestP,CompCount,itemsweideGuestP),
+		lineMainN(items12BetMainNorm,fruits,itemsYiMainNorm,itemsYingLiMainNorm,CompCount,itemsweideMainNorm,itemsbwinMainNorm),
+		lineMainP(items12BetMainP,fruits,itemsYiMainP,itemsYingLiMainP,CompCount,itemsweideMainP,itemsbwinMainP),
+		lineMiddleN(items12BetMiddleNorm,fruits,itemsYiMiddleNorm,itemsYingLiMiddleNorm,CompCount,itemsweideMiddleNorm,itemsbwinMiddleNorm),
+		lineMiddleP(items12BetMiddleP,fruits,itemsYiMiddleP,itemsYingLiMiddleP,CompCount,itemsweideMiddleP,itemsbwinMiddleP),
+		lineGuestN(items12BetGuestNorm,fruits,itemsYiGuestNorm,itemsYingLiGuestNorm,CompCount,itemsweideGuestNorm,itemsbwinGuestNorm),
+		lineGuestP(items12BetGuestP,fruits,itemsYiGuestP,itemsYingLiGuestP,CompCount,itemsweideGuestP,itemsbwinGuestP),
 	)
 	str_name := "T-" + matchId
 	//page.PageTitle = str_name
@@ -287,7 +303,7 @@ func HandleData(dataList []norm, matchId string,CompCount int){
 	page.Render(io.MultiWriter(f))
 }
 
-func lineMiddleP(items12Bet []opts.LineData,fruits []string,itemsYi []opts.LineData,itemsYing []opts.LineData,CompCount int,itemsWeide []opts.LineData) *charts.Line {
+func lineMiddleP(items12Bet []opts.LineData,fruits []string,itemsYi []opts.LineData,itemsYing []opts.LineData,CompCount int,itemsWeide []opts.LineData,itemsBwin []opts.LineData) *charts.Line {
 
 	line := charts.NewLine()
 	title := "平赔_"+ strconv.Itoa(CompCount)
@@ -307,6 +323,7 @@ func lineMiddleP(items12Bet []opts.LineData,fruits []string,itemsYi []opts.LineD
 		AddSeries("盈利", itemsYing).
 		AddSeries("12Bet", items12Bet).
 		AddSeries("韦德", itemsWeide).
+		AddSeries("bwin", itemsBwin).
 		SetSeriesOptions(
 		charts.WithLineChartOpts(opts.LineChart{
 			ShowSymbol: true,
@@ -319,7 +336,7 @@ func lineMiddleP(items12Bet []opts.LineData,fruits []string,itemsYi []opts.LineD
 	return line
 }
 
-func lineGuestP(items12Bet []opts.LineData,fruits []string,itemsYi []opts.LineData,itemsYing []opts.LineData,CompCount int,itemsWeide []opts.LineData) *charts.Line {
+func lineGuestP(items12Bet []opts.LineData,fruits []string,itemsYi []opts.LineData,itemsYing []opts.LineData,CompCount int,itemsWeide []opts.LineData,itemsBwin []opts.LineData) *charts.Line {
 
 	line := charts.NewLine()
 	title := "客赔_"+ strconv.Itoa(CompCount)
@@ -341,6 +358,7 @@ func lineGuestP(items12Bet []opts.LineData,fruits []string,itemsYi []opts.LineDa
 		AddSeries("盈利", itemsYing).
 		AddSeries("12Bet", items12Bet).
 		AddSeries("韦德", itemsWeide).
+		AddSeries("bwin", itemsBwin).
 		SetSeriesOptions(
 		charts.WithLineChartOpts(opts.LineChart{
 			ShowSymbol: true,
@@ -353,7 +371,7 @@ func lineGuestP(items12Bet []opts.LineData,fruits []string,itemsYi []opts.LineDa
 	return line
 }
 
-func lineMainP(items12Bet []opts.LineData,fruits []string,itemsYi []opts.LineData,itemsYing []opts.LineData,CompCount int,itemsWeide []opts.LineData) *charts.Line {
+func lineMainP(items12Bet []opts.LineData,fruits []string,itemsYi []opts.LineData,itemsYing []opts.LineData,CompCount int,itemsWeide []opts.LineData,itemsBwin []opts.LineData) *charts.Line {
 
 	line := charts.NewLine()
 	title := "主赔_"+ strconv.Itoa(CompCount)
@@ -376,6 +394,7 @@ func lineMainP(items12Bet []opts.LineData,fruits []string,itemsYi []opts.LineDat
 		AddSeries("盈利", itemsYing).
 		AddSeries("12Bet", items12Bet).
 		AddSeries("韦德", itemsWeide).
+		AddSeries("bwin", itemsBwin).
 		SetSeriesOptions(
 		charts.WithLineChartOpts(opts.LineChart{
 			ShowSymbol: true,
@@ -388,7 +407,7 @@ func lineMainP(items12Bet []opts.LineData,fruits []string,itemsYi []opts.LineDat
 	return line
 }
 
-func lineMiddleN(items12Bet []opts.LineData,fruits []string,itemsYi []opts.LineData,itemsYing []opts.LineData,CompCount int,itemsWeide []opts.LineData) *charts.Line {
+func lineMiddleN(items12Bet []opts.LineData,fruits []string,itemsYi []opts.LineData,itemsYing []opts.LineData,CompCount int,itemsWeide []opts.LineData,itemsBwin []opts.LineData) *charts.Line {
 
 	line := charts.NewLine()
 	title := "平Norm_"+ strconv.Itoa(CompCount)
@@ -407,6 +426,7 @@ func lineMiddleN(items12Bet []opts.LineData,fruits []string,itemsYi []opts.LineD
 		AddSeries("盈利", itemsYing).
 		AddSeries("12Bet", items12Bet).
 		AddSeries("韦德", itemsWeide).
+		AddSeries("bwin", itemsBwin).
 		SetSeriesOptions(
 		charts.WithLineChartOpts(opts.LineChart{
 			ShowSymbol: true,
@@ -418,7 +438,7 @@ func lineMiddleN(items12Bet []opts.LineData,fruits []string,itemsYi []opts.LineD
 	return line
 }
 
-func lineGuestN(items12Bet []opts.LineData,fruits []string,itemsYi []opts.LineData,itemsYing []opts.LineData,CompCount int,itemsWeide []opts.LineData) *charts.Line {
+func lineGuestN(items12Bet []opts.LineData,fruits []string,itemsYi []opts.LineData,itemsYing []opts.LineData,CompCount int,itemsWeide []opts.LineData,itemsBwin []opts.LineData) *charts.Line {
 
 	line := charts.NewLine()
 	title := "客Norm_"+ strconv.Itoa(CompCount)
@@ -440,6 +460,7 @@ func lineGuestN(items12Bet []opts.LineData,fruits []string,itemsYi []opts.LineDa
 		AddSeries("盈利", itemsYing).
 		AddSeries("12Bet", items12Bet).
 		AddSeries("韦德", itemsWeide).
+		AddSeries("bwin", itemsBwin).
 		SetSeriesOptions(
 		charts.WithLineChartOpts(opts.LineChart{
 			ShowSymbol: true,
@@ -451,7 +472,7 @@ func lineGuestN(items12Bet []opts.LineData,fruits []string,itemsYi []opts.LineDa
 	return line
 }
 
-func lineMainN(items12Bet []opts.LineData,fruits []string,itemsYi []opts.LineData,itemsYing []opts.LineData,CompCount int,itemsWeide []opts.LineData) *charts.Line {
+func lineMainN(items12Bet []opts.LineData,fruits []string,itemsYi []opts.LineData,itemsYing []opts.LineData,CompCount int,itemsWeide []opts.LineData,itemsBwin []opts.LineData) *charts.Line {
 
 	line := charts.NewLine()
 	title := "主Norm_"+ strconv.Itoa(CompCount)
@@ -479,6 +500,7 @@ func lineMainN(items12Bet []opts.LineData,fruits []string,itemsYi []opts.LineDat
 		AddSeries("盈利", itemsYing).
 		AddSeries("12Bet", items12Bet).
 		AddSeries("韦德", itemsWeide).
+		AddSeries("bwin", itemsBwin).
 		SetSeriesOptions(
 		charts.WithLineChartOpts(opts.LineChart{
 			ShowSymbol: true,
