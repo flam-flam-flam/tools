@@ -306,7 +306,7 @@ func HandleData(dataList []norm, matchId string,CompCount int){
 func lineMiddleP(items12Bet []opts.LineData,fruits []string,itemsYi []opts.LineData,itemsYing []opts.LineData,CompCount int,itemsWeide []opts.LineData,itemsBwin []opts.LineData) *charts.Line {
 
 	line := charts.NewLine()
-	title := "平赔_"+ strconv.Itoa(CompCount)
+	title := "平_"+ strconv.Itoa(CompCount)
 	line.SetGlobalOptions(
 		charts.WithTitleOpts(opts.Title{
 			Title: title,
@@ -319,8 +319,8 @@ func lineMiddleP(items12Bet []opts.LineData,fruits []string,itemsYi []opts.LineD
 		charts.WithYAxisOpts(opts.YAxis{Scale: true,Min: 1.9, Max: "dataMax"}),
 	)
 	line.SetXAxis(fruits).
-		AddSeries("易时博", itemsYi).
-		AddSeries("盈利", itemsYing).
+		AddSeries("易", itemsYi).
+		AddSeries("盈", itemsYing).
 		AddSeries("12Bet", items12Bet).
 		AddSeries("韦德", itemsWeide).
 		AddSeries("bwin", itemsBwin).
@@ -339,7 +339,7 @@ func lineMiddleP(items12Bet []opts.LineData,fruits []string,itemsYi []opts.LineD
 func lineGuestP(items12Bet []opts.LineData,fruits []string,itemsYi []opts.LineData,itemsYing []opts.LineData,CompCount int,itemsWeide []opts.LineData,itemsBwin []opts.LineData) *charts.Line {
 
 	line := charts.NewLine()
-	title := "客赔_"+ strconv.Itoa(CompCount)
+	title := "客_"+ strconv.Itoa(CompCount)
 	line.SetGlobalOptions(
 		charts.WithTitleOpts(opts.Title{
 			Title: title,
@@ -354,8 +354,8 @@ func lineGuestP(items12Bet []opts.LineData,fruits []string,itemsYi []opts.LineDa
 		charts.WithYAxisOpts(opts.YAxis{Scale: true,Min: 1.9, Max: "dataMax"}),
 	)
 	line.SetXAxis(fruits).
-		AddSeries("易时博", itemsYi).
-		AddSeries("盈利", itemsYing).
+		AddSeries("易", itemsYi).
+		AddSeries("盈", itemsYing).
 		AddSeries("12Bet", items12Bet).
 		AddSeries("韦德", itemsWeide).
 		AddSeries("bwin", itemsBwin).
@@ -374,7 +374,7 @@ func lineGuestP(items12Bet []opts.LineData,fruits []string,itemsYi []opts.LineDa
 func lineMainP(items12Bet []opts.LineData,fruits []string,itemsYi []opts.LineData,itemsYing []opts.LineData,CompCount int,itemsWeide []opts.LineData,itemsBwin []opts.LineData) *charts.Line {
 
 	line := charts.NewLine()
-	title := "主赔_"+ strconv.Itoa(CompCount)
+	title := "主_"+ strconv.Itoa(CompCount)
 	line.SetGlobalOptions(
 		charts.WithTitleOpts(opts.Title{
 			Title: title,
@@ -390,8 +390,8 @@ func lineMainP(items12Bet []opts.LineData,fruits []string,itemsYi []opts.LineDat
 		charts.WithYAxisOpts(opts.YAxis{Scale: true,Min: 1.9, Max: "dataMax"}),
 	)
 	line.SetXAxis(fruits).
-		AddSeries("易时博", itemsYi).
-		AddSeries("盈利", itemsYing).
+		AddSeries("易", itemsYi).
+		AddSeries("盈", itemsYing).
 		AddSeries("12Bet", items12Bet).
 		AddSeries("韦德", itemsWeide).
 		AddSeries("bwin", itemsBwin).
@@ -422,8 +422,8 @@ func lineMiddleN(items12Bet []opts.LineData,fruits []string,itemsYi []opts.LineD
 		}),
 	)
 	line.SetXAxis(fruits).
-		AddSeries("易时博", itemsYi).
-		AddSeries("盈利", itemsYing).
+		AddSeries("易", itemsYi).
+		AddSeries("盈", itemsYing).
 		AddSeries("12Bet", items12Bet).
 		AddSeries("韦德", itemsWeide).
 		AddSeries("bwin", itemsBwin).
@@ -456,8 +456,8 @@ func lineGuestN(items12Bet []opts.LineData,fruits []string,itemsYi []opts.LineDa
 		//})
 	)
 	line.SetXAxis(fruits).
-		AddSeries("易时博", itemsYi).
-		AddSeries("盈利", itemsYing).
+		AddSeries("易", itemsYi).
+		AddSeries("盈", itemsYing).
 		AddSeries("12Bet", items12Bet).
 		AddSeries("韦德", itemsWeide).
 		AddSeries("bwin", itemsBwin).
@@ -496,8 +496,8 @@ func lineMainN(items12Bet []opts.LineData,fruits []string,itemsYi []opts.LineDat
 		//}),
 	)
 	line.SetXAxis(fruits).
-		AddSeries("易时博", itemsYi).
-		AddSeries("盈利", itemsYing).
+		AddSeries("易", itemsYi).
+		AddSeries("盈", itemsYing).
 		AddSeries("12Bet", items12Bet).
 		AddSeries("韦德", itemsWeide).
 		AddSeries("bwin", itemsBwin).
