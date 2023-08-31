@@ -173,26 +173,26 @@ func Line(w http.ResponseWriter, r *http.Request) {
 func HandleData(dataList []norm, matchId string,CompCount int){
 
 	fruits := []string{}
-	items12BetMainNorm := make([]opts.LineData, 0) //12bet
-	items12BetMainP := make([]opts.LineData, 0) //12bet
-	itemsYiMainNorm := make([]opts.LineData, 0) //易时博
-	itemsYiMainP := make([]opts.LineData, 0) //易时博
-	itemsYingLiMainNorm := make([]opts.LineData, 0) //盈利
-	itemsYingLiMainP := make([]opts.LineData, 0) //盈利
+	items12BetMainNorm := make([]opts.LineData, 0) //12
+	items12BetMainP := make([]opts.LineData, 0) //12
+	itemsYiMainNorm := make([]opts.LineData, 0) //易
+	itemsYiMainP := make([]opts.LineData, 0) //易
+	itemsYingLiMainNorm := make([]opts.LineData, 0) //盈
+	itemsYingLiMainP := make([]opts.LineData, 0) //盈
 
-	items12BetMiddleNorm := make([]opts.LineData, 0) //12bet
-	items12BetMiddleP := make([]opts.LineData, 0) //12bet
-	itemsYiMiddleNorm := make([]opts.LineData, 0) //易时博
-	itemsYiMiddleP := make([]opts.LineData, 0) //易时博
-	itemsYingLiMiddleNorm := make([]opts.LineData, 0) //盈利
+	items12BetMiddleNorm := make([]opts.LineData, 0) //12
+	items12BetMiddleP := make([]opts.LineData, 0) //12
+	itemsYiMiddleNorm := make([]opts.LineData, 0) //易
+	itemsYiMiddleP := make([]opts.LineData, 0) //易
+	itemsYingLiMiddleNorm := make([]opts.LineData, 0) //盈
 	itemsYingLiMiddleP := make([]opts.LineData, 0) //盈利
 
-	items12BetGuestNorm := make([]opts.LineData, 0) //12bet
-	items12BetGuestP := make([]opts.LineData, 0) //12bet
-	itemsYiGuestNorm := make([]opts.LineData, 0) //易时博
-	itemsYiGuestP := make([]opts.LineData, 0) //易时博
-	itemsYingLiGuestNorm := make([]opts.LineData, 0) //盈利
-	itemsYingLiGuestP := make([]opts.LineData, 0) //盈利
+	items12BetGuestNorm := make([]opts.LineData, 0) //12
+	items12BetGuestP := make([]opts.LineData, 0) //12
+	itemsYiGuestNorm := make([]opts.LineData, 0) //易
+	itemsYiGuestP := make([]opts.LineData, 0) //易
+	itemsYingLiGuestNorm := make([]opts.LineData, 0) //盈
+	itemsYingLiGuestP := make([]opts.LineData, 0) //盈
 
 
 	itemsweideMainNorm := make([]opts.LineData, 0) //weide
@@ -203,12 +203,12 @@ func HandleData(dataList []norm, matchId string,CompCount int){
 	itemsweideGuestP := make([]opts.LineData, 0) //weide
 
 
-	itemsbwinMainNorm := make([]opts.LineData, 0) //bwin
-	itemsbwinMainP := make([]opts.LineData, 0) //bwin
-	itemsbwinMiddleNorm := make([]opts.LineData, 0) //bwin
-	itemsbwinMiddleP := make([]opts.LineData, 0) //bwin
-	itemsbwinGuestNorm := make([]opts.LineData, 0) //bwin
-	itemsbwinGuestP := make([]opts.LineData, 0) //bwin
+	itemsbwinMainNorm := make([]opts.LineData, 0) //bw
+	itemsbwinMainP := make([]opts.LineData, 0) //bw
+	itemsbwinMiddleNorm := make([]opts.LineData, 0) //bw
+	itemsbwinMiddleP := make([]opts.LineData, 0) //bw
+	itemsbwinGuestNorm := make([]opts.LineData, 0) //bw
+	itemsbwinGuestP := make([]opts.LineData, 0) //bw
 
 	var i int
 	if len(dataList) < 10{
