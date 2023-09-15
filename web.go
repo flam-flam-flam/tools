@@ -5,6 +5,7 @@ import (
 	"github.com/go-echarts/go-echarts/v2/charts"
 	"github.com/go-echarts/go-echarts/v2/components"
 	"github.com/go-echarts/go-echarts/v2/opts"
+	"github.com/go-echarts/go-echarts/v2/types"
 	"io"
 	"log"
 	"math/rand"
@@ -70,6 +71,21 @@ type norm struct {
 	DensityMain3   float64
 	DensityGuest3  float64
 	DensityMiddle3 float64
+	MainMaxName    string
+	MiddleMaxName  string
+	GuestMaxName   string
+	BaseMainMaxValue1 float64
+	BaseMainMaxValue2 float64
+	BaseMiddleMaxValue1 float64
+	BaseMiddleMaxValue2 float64
+	BaseGuestMaxValue1 float64
+	BaseGuestMaxValue2 float64
+	MainFirstMax float64
+	MainSecondMax float64
+	MiddleFirstMax float64
+	MiddleSecondMax float64
+	GuestFirstMax float64
+	GuestSecondMax float64
 	OddTime        string
 	MatchTime      time.Time
 }
@@ -104,7 +120,7 @@ var tmpl = template.Must(template.ParseGlob("D:/foot-master/foot-web/service/for
 
 func Index(w http.ResponseWriter, r *http.Request) {
 	db := dbConn()
-	selDB, err := db.Query("SELECT la.Id,la.MainTeamId,la.GuestTeamId,la.MatchDate,tl.Name FROM foot.t_match_his la left join t_league tl  ON la.LeagueId=tl.Id WHERE MatchDate > DATE_SUB(NOW(),INTERVAL 120 MINUTE) AND MatchDate < DATE_ADD(NOW(), INTERVAL 147 MINUTE) ORDER BY MatchDate ASC")
+	selDB, err := db.Query("SELECT la.Id,la.MainTeamId,la.GuestTeamId,la.MatchDate,tl.Name FROM foot.t_match_his la left join t_league tl  ON la.LeagueId=tl.Id WHERE MatchDate > DATE_SUB(NOW(),INTERVAL 2500 MINUTE) AND MatchDate < DATE_ADD(NOW(), INTERVAL 147 MINUTE) ORDER BY MatchDate ASC")
 	if err != nil {
 		panic(err.Error())
 	}
@@ -173,26 +189,44 @@ func Line(w http.ResponseWriter, r *http.Request) {
 func HandleData(dataList []norm, matchId string,CompCount int){
 
 	fruits := []string{}
-	items12BetMainNorm := make([]opts.LineData, 0) //12
-	items12BetMainP := make([]opts.LineData, 0) //12
-	itemsYiMainNorm := make([]opts.LineData, 0) //易
-	itemsYiMainP := make([]opts.LineData, 0) //易
-	itemsYingLiMainNorm := make([]opts.LineData, 0) //盈
-	itemsYingLiMainP := make([]opts.LineData, 0) //盈
+	companysMain := []string{}
+	companysMiddle := []string{}
+	companysGuest := []string{}
 
-	items12BetMiddleNorm := make([]opts.LineData, 0) //12
-	items12BetMiddleP := make([]opts.LineData, 0) //12
-	itemsYiMiddleNorm := make([]opts.LineData, 0) //易
-	itemsYiMiddleP := make([]opts.LineData, 0) //易
-	itemsYingLiMiddleNorm := make([]opts.LineData, 0) //盈
+	BaseMainMaxValue1 := make([]opts.LineData, 0)
+	BaseMainMaxValue2 := make([]opts.LineData, 0)
+	BaseMiddleMaxValue1 := make([]opts.LineData, 0)
+	BaseMiddleMaxValue2 := make([]opts.LineData, 0)
+	BaseGuestMaxValue1 := make([]opts.LineData, 0)
+	BaseGuestMaxValue2 := make([]opts.LineData, 0)
+	MainFirstMax := make([]opts.LineData, 0)
+	MainSecondMax := make([]opts.LineData, 0)
+	MiddleFirstMax := make([]opts.LineData, 0)
+	MiddleSecondMax := make([]opts.LineData, 0)
+	GuestFirstMax := make([]opts.LineData, 0)
+	GuestSecondMax := make([]opts.LineData, 0)
+
+
+	items12BetMainNorm := make([]opts.LineData, 0) //12bet
+	items12BetMainP := make([]opts.LineData, 0) //12bet
+	itemsYiMainNorm := make([]opts.LineData, 0) //易时博
+	itemsYiMainP := make([]opts.LineData, 0) //易时博
+	itemsYingLiMainNorm := make([]opts.LineData, 0) //盈利
+	itemsYingLiMainP := make([]opts.LineData, 0) //盈利
+
+	items12BetMiddleNorm := make([]opts.LineData, 0) //12bet
+	items12BetMiddleP := make([]opts.LineData, 0) //12bet
+	itemsYiMiddleNorm := make([]opts.LineData, 0) //易时博
+	itemsYiMiddleP := make([]opts.LineData, 0) //易时博
+	itemsYingLiMiddleNorm := make([]opts.LineData, 0) //盈利
 	itemsYingLiMiddleP := make([]opts.LineData, 0) //盈利
 
-	items12BetGuestNorm := make([]opts.LineData, 0) //12
-	items12BetGuestP := make([]opts.LineData, 0) //12
-	itemsYiGuestNorm := make([]opts.LineData, 0) //易
-	itemsYiGuestP := make([]opts.LineData, 0) //易
-	itemsYingLiGuestNorm := make([]opts.LineData, 0) //盈
-	itemsYingLiGuestP := make([]opts.LineData, 0) //盈
+	items12BetGuestNorm := make([]opts.LineData, 0) //12bet
+	items12BetGuestP := make([]opts.LineData, 0) //12bet
+	itemsYiGuestNorm := make([]opts.LineData, 0) //易时博
+	itemsYiGuestP := make([]opts.LineData, 0) //易时博
+	itemsYingLiGuestNorm := make([]opts.LineData, 0) //盈利
+	itemsYingLiGuestP := make([]opts.LineData, 0) //盈利
 
 
 	itemsweideMainNorm := make([]opts.LineData, 0) //weide
@@ -203,12 +237,12 @@ func HandleData(dataList []norm, matchId string,CompCount int){
 	itemsweideGuestP := make([]opts.LineData, 0) //weide
 
 
-	itemsbwinMainNorm := make([]opts.LineData, 0) //bw
-	itemsbwinMainP := make([]opts.LineData, 0) //bw
-	itemsbwinMiddleNorm := make([]opts.LineData, 0) //bw
-	itemsbwinMiddleP := make([]opts.LineData, 0) //bw
-	itemsbwinGuestNorm := make([]opts.LineData, 0) //bw
-	itemsbwinGuestP := make([]opts.LineData, 0) //bw
+	itemsbwinMainNorm := make([]opts.LineData, 0) //bwin
+	itemsbwinMainP := make([]opts.LineData, 0) //bwin
+	itemsbwinMiddleNorm := make([]opts.LineData, 0) //bwin
+	itemsbwinMiddleP := make([]opts.LineData, 0) //bwin
+	itemsbwinGuestNorm := make([]opts.LineData, 0) //bwin
+	itemsbwinGuestP := make([]opts.LineData, 0) //bwin
 
 	var i int
 	if len(dataList) < 15{
@@ -220,29 +254,26 @@ func HandleData(dataList []norm, matchId string,CompCount int){
 		i = 14
 	}
 
-	//fruits = append(fruits, "000000")
-	//items12BetMainNorm = append(items12BetMainNorm, opts.LineData{Value: dataList[i].Main10Norm})
-	//itemsYiMainNorm = append(itemsYiMainNorm, opts.LineData{Value: dataList[i].CN3})
-	//itemsYingLiMainNorm = append(itemsYingLiMainNorm, opts.LineData{Value: dataList[i].IN3})
-	//items12BetMainP = append(items12BetMainP, opts.LineData{Value: 6.0})
-	//itemsYiMainP = append(itemsYiMainP, opts.LineData{Value: 6.0})
-	//itemsYingLiMainP = append(itemsYingLiMainP, opts.LineData{Value: 6.0})
-	//
-	//items12BetMiddleNorm = append(items12BetMiddleNorm, opts.LineData{Value: dataList[i].Middle10Norm})
-	//itemsYiMiddleNorm = append(itemsYiMiddleNorm, opts.LineData{Value: dataList[i].CN1})
-	//itemsYingLiMiddleNorm = append(itemsYingLiMiddleNorm, opts.LineData{Value: dataList[i].IN1})
-	//items12BetMiddleP = append(items12BetMiddleP, opts.LineData{Value: 6.0})
-	//itemsYiMiddleP = append(itemsYiMiddleP, opts.LineData{Value: 6.0})
-	//itemsYingLiMiddleP = append(itemsYingLiMiddleP, opts.LineData{Value: 6.0})
-	//
-	//items12BetGuestNorm = append(items12BetGuestNorm, opts.LineData{Value: dataList[i].Guest10Norm})
-	//itemsYiGuestNorm = append(itemsYiGuestNorm, opts.LineData{Value: dataList[i].CN0})
-	//itemsYingLiGuestNorm = append(itemsYingLiGuestNorm, opts.LineData{Value: dataList[i].IN0})
-	//items12BetGuestP = append(items12BetGuestP, opts.LineData{Value: 6.0})
-	//itemsYiGuestP = append(itemsYiGuestP, opts.LineData{Value: 6.0})
-	//itemsYingLiGuestP = append(itemsYingLiGuestP, opts.LineData{Value: 6.0})
 
 	for ; i >= 0 ; i-- {
+		companysMain = append(companysMain, dataList[i].MainMaxName)
+		companysMiddle = append(companysMiddle, dataList[i].MiddleMaxName)
+		companysGuest = append(companysGuest, dataList[i].GuestMaxName)
+		BaseMainMaxValue1= append(BaseMainMaxValue1,opts.LineData{Value: dataList[i].BaseMainMaxValue1})
+		BaseMainMaxValue2= append(BaseMainMaxValue2,opts.LineData{Value: dataList[i].BaseMainMaxValue2})
+		BaseMiddleMaxValue1 = append(BaseMiddleMaxValue1,opts.LineData{Value: dataList[i].BaseMiddleMaxValue1})
+		BaseMiddleMaxValue2 = append(BaseMiddleMaxValue2,opts.LineData{Value: dataList[i].BaseMiddleMaxValue2})
+		BaseGuestMaxValue1 = append(BaseGuestMaxValue1,opts.LineData{Value: dataList[i].BaseGuestMaxValue1})
+		BaseGuestMaxValue2 = append(BaseGuestMaxValue2,opts.LineData{Value: dataList[i].BaseGuestMaxValue2})
+
+		MainFirstMax = append(MainFirstMax,opts.LineData{Value: dataList[i].MainFirstMax})
+		MainSecondMax = append(MainSecondMax,opts.LineData{Value: dataList[i].MainSecondMax})
+		MiddleFirstMax = append(MiddleFirstMax,opts.LineData{Value: dataList[i].MiddleFirstMax})
+		MiddleSecondMax = append(MiddleSecondMax,opts.LineData{Value: dataList[i].MiddleSecondMax})
+		GuestFirstMax = append(GuestFirstMax,opts.LineData{Value: dataList[i].GuestFirstMax})
+		GuestSecondMax = append(GuestSecondMax,opts.LineData{Value: dataList[i].GuestSecondMax})
+
+
 		fruits = append(fruits, dataList[i].OddTime)
 		items12BetMainNorm = append(items12BetMainNorm, opts.LineData{Value: dataList[i].Main10Norm})
 		itemsYiMainNorm = append(itemsYiMainNorm, opts.LineData{Value: dataList[i].CN3})
@@ -265,6 +296,7 @@ func HandleData(dataList []norm, matchId string,CompCount int){
 		itemsYiGuestP = append(itemsYiGuestP, opts.LineData{Value: dataList[i].CP0})
 		itemsYingLiGuestP = append(itemsYingLiGuestP, opts.LineData{Value: dataList[i].IP0})
 
+		//weilian
 		itemsweideMainNorm = append(itemsweideMainNorm, opts.LineData{Value: dataList[i].PrinMainNorm})
 		itemsweideMiddleNorm = append(itemsweideMiddleNorm, opts.LineData{Value: dataList[i].PrinMiddleNorm})
 		itemsweideGuestNorm = append(itemsweideGuestNorm, opts.LineData{Value: dataList[i].PrinGuestNorm})
@@ -286,10 +318,13 @@ func HandleData(dataList []norm, matchId string,CompCount int){
 	page.AddCharts(
 		lineMainN(items12BetMainNorm,fruits,itemsYiMainNorm,itemsYingLiMainNorm,CompCount,itemsweideMainNorm,itemsbwinMainNorm),
 		lineMainP(items12BetMainP,fruits,itemsYiMainP,itemsYingLiMainP,CompCount,itemsweideMainP,itemsbwinMainP),
+		lineMainAnaly(companysMain,BaseMainMaxValue1,BaseMainMaxValue2,MainFirstMax,MainSecondMax,CompCount),
 		lineMiddleN(items12BetMiddleNorm,fruits,itemsYiMiddleNorm,itemsYingLiMiddleNorm,CompCount,itemsweideMiddleNorm,itemsbwinMiddleNorm),
 		lineMiddleP(items12BetMiddleP,fruits,itemsYiMiddleP,itemsYingLiMiddleP,CompCount,itemsweideMiddleP,itemsbwinMiddleP),
+		lineMiddleAnaly(companysMiddle,BaseMiddleMaxValue1,BaseMiddleMaxValue2,MiddleFirstMax,MiddleSecondMax,CompCount),
 		lineGuestN(items12BetGuestNorm,fruits,itemsYiGuestNorm,itemsYingLiGuestNorm,CompCount,itemsweideGuestNorm,itemsbwinGuestNorm),
 		lineGuestP(items12BetGuestP,fruits,itemsYiGuestP,itemsYingLiGuestP,CompCount,itemsweideGuestP,itemsbwinGuestP),
+		lineGuestAnaly(companysGuest,BaseGuestMaxValue1,BaseGuestMaxValue2,GuestFirstMax,GuestSecondMax,CompCount),
 	)
 	str_name := "T-" + matchId
 	//page.PageTitle = str_name
@@ -303,10 +338,10 @@ func HandleData(dataList []norm, matchId string,CompCount int){
 	page.Render(io.MultiWriter(f))
 }
 
-func lineMiddleP(items12Bet []opts.LineData,fruits []string,itemsYi []opts.LineData,itemsYing []opts.LineData,CompCount int,itemsWeide []opts.LineData,itemsBwin []opts.LineData) *charts.Line {
+func lineMainAnaly(fruits []string, BaseMaxValue1 []opts.LineData,BaseMaxValue2 []opts.LineData,FirstMax []opts.LineData,SecondMax []opts.LineData,CompCount int) *charts.Line {
 
 	line := charts.NewLine()
-	title := "平_"+ strconv.Itoa(CompCount)
+	title := "主Base_"+ strconv.Itoa(CompCount)
 	line.SetGlobalOptions(
 		charts.WithTitleOpts(opts.Title{
 			Title: title,
@@ -316,13 +351,141 @@ func lineMiddleP(items12Bet []opts.LineData,fruits []string,itemsYi []opts.LineD
 			Width: "720px",
 			Height: "500px",
 		}),
-		charts.WithYAxisOpts(opts.YAxis{Scale: true,Min: 1.9, Max: "dataMax"}),
+		charts.WithXAxisOpts(opts.XAxis{
+			AxisLabel: &opts.AxisLabel{
+				Show:         true,
+				Interval:     "0",
+				Rotate:       30,
+				ShowMinLabel: true,
+				ShowMaxLabel: true,
+			},
+		}),
+		charts.WithYAxisOpts(opts.YAxis{Scale: true,Min: "dataMin", Max: "dataMax"}),
 	)
 	line.SetXAxis(fruits).
-		AddSeries("易", itemsYi).
-		AddSeries("盈", itemsYing).
-		AddSeries("12Bet", items12Bet).
-		AddSeries("韦德", itemsWeide).
+		AddSeries("base1.3", BaseMaxValue1).
+		AddSeries("maxFirst", FirstMax).
+		AddSeries("maxSecond", SecondMax).
+		AddSeries("base1.62", BaseMaxValue2).
+		SetSeriesOptions(
+			charts.WithLineChartOpts(opts.LineChart{
+				ShowSymbol: true,
+			}),
+			charts.WithLabelOpts(opts.Label{
+				Show: true,
+			}),
+		)
+	return line
+}
+
+func lineMiddleAnaly(fruits []string, BaseMaxValue1 []opts.LineData,BaseMaxValue2 []opts.LineData,FirstMax []opts.LineData,SecondMax []opts.LineData,CompCount int) *charts.Line {
+
+	line := charts.NewLine()
+	title := "平Base_"+ strconv.Itoa(CompCount)
+	line.SetGlobalOptions(
+		charts.WithTitleOpts(opts.Title{
+			Title: title,
+		}),
+		charts.WithInitializationOpts(opts.Initialization{
+			Theme: "shine",
+			Width: "720px",
+			Height: "500px",
+		}),
+		charts.WithXAxisOpts(opts.XAxis{
+			AxisLabel: &opts.AxisLabel{
+				Show:         true,
+				Interval:     "0",
+				Rotate:       30,
+				ShowMinLabel: true,
+				ShowMaxLabel: true,
+			},
+		}),
+		charts.WithYAxisOpts(opts.YAxis{Scale: true,Min: "dataMin", Max: "dataMax"}),
+	)
+	line.SetXAxis(fruits).
+		AddSeries("base1.3", BaseMaxValue1).
+		AddSeries("maxFirst", FirstMax).
+		AddSeries("maxSecond", SecondMax).
+		AddSeries("base1.62", BaseMaxValue2).
+		SetSeriesOptions(
+			charts.WithLineChartOpts(opts.LineChart{
+				ShowSymbol: true,
+			}),
+			charts.WithLabelOpts(opts.Label{
+				Show: true,
+			}),
+		)
+	return line
+}
+func lineGuestAnaly(fruits []string, BaseMaxValue1 []opts.LineData,BaseMaxValue2 []opts.LineData,FirstMax []opts.LineData,SecondMax []opts.LineData,CompCount int) *charts.Line {
+
+	line := charts.NewLine()
+	title := "客Base_"+ strconv.Itoa(CompCount)
+	line.SetGlobalOptions(
+		charts.WithTitleOpts(opts.Title{
+			Title: title,
+		}),
+		charts.WithInitializationOpts(opts.Initialization{
+			Theme: "shine",
+			Width: "720px",
+			Height: "500px",
+		}),
+		charts.WithXAxisOpts(opts.XAxis{
+			AxisLabel: &opts.AxisLabel{
+				Show:         true,
+				Interval:     "0",
+				Rotate:       30,
+				ShowMinLabel: true,
+				ShowMaxLabel: true,
+			},
+		}),
+		charts.WithYAxisOpts(opts.YAxis{Scale: true,Min: "dataMin", Max: "dataMax"}),
+	)
+	line.SetXAxis(fruits).
+		AddSeries("base1.3", BaseMaxValue1).
+		AddSeries("maxFirst", FirstMax).
+		AddSeries("maxSecond", SecondMax).
+		AddSeries("base1.62", BaseMaxValue2).
+		SetSeriesOptions(
+			charts.WithLineChartOpts(opts.LineChart{
+				ShowSymbol: true,
+			}),
+			charts.WithLabelOpts(opts.Label{
+				Show: true,
+			}),
+		)
+	return line
+}
+
+func lineMiddleP(items12Bet []opts.LineData,fruits []string,itemsYi []opts.LineData,itemsYing []opts.LineData,CompCount int,itemsWeide []opts.LineData,itemsBwin []opts.LineData) *charts.Line {
+
+	line := charts.NewLine()
+	title := "平赔_"+ strconv.Itoa(CompCount)
+	line.SetGlobalOptions(
+		charts.WithTitleOpts(opts.Title{
+			Title: title,
+		}),
+		charts.WithInitializationOpts(opts.Initialization{
+			Theme: "shine",
+			Width: "720px",
+			Height: "500px",
+		}),
+		charts.WithXAxisOpts(opts.XAxis{
+			AxisLabel: &opts.AxisLabel{
+				Show:         true,
+				Interval:     "0",
+				Rotate:       30,
+				ShowMinLabel: true,
+				ShowMaxLabel: true,
+			},
+		}),
+		charts.WithYAxisOpts(opts.YAxis{Scale: true,Min: "dataMin", Max: "dataMax"}),
+	)
+	line.SetXAxis(fruits).
+		AddSeries("12bet", itemsYi).
+		AddSeries("盈利", itemsYing).
+		AddSeries("crown", items12Bet).
+		AddSeries("prinn", itemsWeide).
 		AddSeries("bwin", itemsBwin).
 		SetSeriesOptions(
 		charts.WithLineChartOpts(opts.LineChart{
@@ -339,7 +502,7 @@ func lineMiddleP(items12Bet []opts.LineData,fruits []string,itemsYi []opts.LineD
 func lineGuestP(items12Bet []opts.LineData,fruits []string,itemsYi []opts.LineData,itemsYing []opts.LineData,CompCount int,itemsWeide []opts.LineData,itemsBwin []opts.LineData) *charts.Line {
 
 	line := charts.NewLine()
-	title := "客_"+ strconv.Itoa(CompCount)
+	title := "客赔_"+ strconv.Itoa(CompCount)
 	line.SetGlobalOptions(
 		charts.WithTitleOpts(opts.Title{
 			Title: title,
@@ -349,15 +512,24 @@ func lineGuestP(items12Bet []opts.LineData,fruits []string,itemsYi []opts.LineDa
 			Width: "720px",
 			Height: "500px",
 		}),
+		charts.WithXAxisOpts(opts.XAxis{
+			AxisLabel: &opts.AxisLabel{
+				Show:         true,
+				Interval:     "0",
+				Rotate:       30,
+				ShowMinLabel: true,
+				ShowMaxLabel: true,
+			},
+		}),
 		//charts.WithInitializationOpts(opts.Initialization{PageTitle:"Diagramms", Theme: types.ThemeWesteros, Width: "1200px", Height: "800px"}),
 		//charts.WithLegendOpts(opts.Legend{Show: true, Left: "right", Orient: "vertical", Y: "100"}),
-		charts.WithYAxisOpts(opts.YAxis{Scale: true,Min: 1.9, Max: "dataMax"}),
+		charts.WithYAxisOpts(opts.YAxis{Scale: true,Min: "dataMin", Max: "dataMax"}),
 	)
 	line.SetXAxis(fruits).
-		AddSeries("易", itemsYi).
-		AddSeries("盈", itemsYing).
-		AddSeries("12Bet", items12Bet).
-		AddSeries("韦德", itemsWeide).
+		AddSeries("12bet", itemsYi).
+		AddSeries("盈利", itemsYing).
+		AddSeries("crown", items12Bet).
+		AddSeries("prinn", itemsWeide).
 		AddSeries("bwin", itemsBwin).
 		SetSeriesOptions(
 		charts.WithLineChartOpts(opts.LineChart{
@@ -374,7 +546,7 @@ func lineGuestP(items12Bet []opts.LineData,fruits []string,itemsYi []opts.LineDa
 func lineMainP(items12Bet []opts.LineData,fruits []string,itemsYi []opts.LineData,itemsYing []opts.LineData,CompCount int,itemsWeide []opts.LineData,itemsBwin []opts.LineData) *charts.Line {
 
 	line := charts.NewLine()
-	title := "主_"+ strconv.Itoa(CompCount)
+	title := "主赔_"+ strconv.Itoa(CompCount)
 	line.SetGlobalOptions(
 		charts.WithTitleOpts(opts.Title{
 			Title: title,
@@ -387,13 +559,22 @@ func lineMainP(items12Bet []opts.LineData,fruits []string,itemsYi []opts.LineDat
 			Width: "720px",
 			Height: "500px",
 		}),
-		charts.WithYAxisOpts(opts.YAxis{Scale: true,Min: 1.9, Max: "dataMax"}),
+		charts.WithXAxisOpts(opts.XAxis{
+			AxisLabel: &opts.AxisLabel{
+				Show:         true,
+				Interval:     "0",
+				Rotate:       30,
+				ShowMinLabel: true,
+				ShowMaxLabel: true,
+			},
+		}),
+		charts.WithYAxisOpts(opts.YAxis{Scale: true,Min: "dataMin", Max: "dataMax"}),
 	)
 	line.SetXAxis(fruits).
-		AddSeries("易", itemsYi).
-		AddSeries("盈", itemsYing).
-		AddSeries("12Bet", items12Bet).
-		AddSeries("韦德", itemsWeide).
+		AddSeries("12bet", itemsYi).
+		AddSeries("盈利", itemsYing).
+		AddSeries("crown", items12Bet).
+		AddSeries("prinn", itemsWeide).
 		AddSeries("bwin", itemsBwin).
 		SetSeriesOptions(
 		charts.WithLineChartOpts(opts.LineChart{
@@ -415,6 +596,15 @@ func lineMiddleN(items12Bet []opts.LineData,fruits []string,itemsYi []opts.LineD
 		charts.WithTitleOpts(opts.Title{
 			Title: title,
 		}),
+		charts.WithXAxisOpts(opts.XAxis{
+			AxisLabel: &opts.AxisLabel{
+				Show:         true,
+				Interval:     "0",
+				Rotate:       30,
+				ShowMinLabel: true,
+				ShowMaxLabel: true,
+			},
+		}),
 		charts.WithInitializationOpts(opts.Initialization{
 			Theme: "shine",
 			Width: "720px",
@@ -422,10 +612,10 @@ func lineMiddleN(items12Bet []opts.LineData,fruits []string,itemsYi []opts.LineD
 		}),
 	)
 	line.SetXAxis(fruits).
-		AddSeries("易", itemsYi).
-		AddSeries("盈", itemsYing).
-		AddSeries("12Bet", items12Bet).
-		AddSeries("韦德", itemsWeide).
+		AddSeries("12bet", itemsYi).
+		AddSeries("盈利", itemsYing).
+		AddSeries("crown", items12Bet).
+		AddSeries("prinn", itemsWeide).
 		AddSeries("bwin", itemsBwin).
 		SetSeriesOptions(
 		charts.WithLineChartOpts(opts.LineChart{
@@ -451,15 +641,24 @@ func lineGuestN(items12Bet []opts.LineData,fruits []string,itemsYi []opts.LineDa
 			Width: "720px",
 			Height: "500px",
 		}),
+		charts.WithXAxisOpts(opts.XAxis{
+			AxisLabel: &opts.AxisLabel{
+				Show:         true,
+				Interval:     "0",
+				Rotate:       30,
+				ShowMinLabel: true,
+				ShowMaxLabel: true,
+			},
+		}),
 		//charts.WithLineChartOpts(opts.LineChart{
 		//
 		//})
 	)
 	line.SetXAxis(fruits).
-		AddSeries("易", itemsYi).
-		AddSeries("盈", itemsYing).
-		AddSeries("12Bet", items12Bet).
-		AddSeries("韦德", itemsWeide).
+		AddSeries("12bet", itemsYi).
+		AddSeries("盈利", itemsYing).
+		AddSeries("crown", items12Bet).
+		AddSeries("prinn", itemsWeide).
 		AddSeries("bwin", itemsBwin).
 		SetSeriesOptions(
 		charts.WithLineChartOpts(opts.LineChart{
@@ -482,24 +681,36 @@ func lineMainN(items12Bet []opts.LineData,fruits []string,itemsYi []opts.LineDat
 		}),
 		//charts.WithLegendOpts(opts.Legend{Left: "left",Top: "top"}), //legend是设定图例的
 		charts.WithInitializationOpts(opts.Initialization{
-			Theme: "shine",
+			Theme: types.ThemeShine,
 			Width: "720px",
 			Height: "500px",
 		}),
 		charts.WithXAxisOpts(opts.XAxis{
-			Show:true,
-			MinInterval: 0,
+			AxisLabel: &opts.AxisLabel{
+				Show:         true,
+				Interval:     "0",
+				Rotate:       30,
+				ShowMinLabel: true,
+				ShowMaxLabel: true,
+			},
 		}),
+		//charts.WithGridOpts(opts.Grid{
+		//	Left: "4%",
+		//	Right: "5%",
+		//	Bottom: "2%",
+		//	Top: "15%",
+		//	ContainLabel: true,
+		//}),
 		//charts.WithToolboxOpts(opts.Toolbox{
-		//	Top: "10px",
-		//	Left: "0px",
+		//	Top: "4%",
+		//	Left: "2%",
 		//}),
 	)
 	line.SetXAxis(fruits).
-		AddSeries("易", itemsYi).
-		AddSeries("盈", itemsYing).
-		AddSeries("12Bet", items12Bet).
-		AddSeries("韦德", itemsWeide).
+		AddSeries("12bet", itemsYi).
+		AddSeries("盈利", itemsYing).
+		AddSeries("crown", items12Bet).
+		AddSeries("prinn", itemsWeide).
 		AddSeries("bwin", itemsBwin).
 		SetSeriesOptions(
 		charts.WithLineChartOpts(opts.LineChart{
@@ -547,7 +758,7 @@ func lineSmooth() *charts.Line {
 func Show(w http.ResponseWriter, r *http.Request) {
 	db := dbConn()
 	nId := r.URL.Query().Get("id")
-	sql := "SELECT MatchId,MainName,GuestName,CompCount,Main10Norm,Middle10Norm,Guest10Norm,Ep3,Ep1,Ep0,Main9Norm,Middle9Norm,Guest9Norm,OddTime,MatchTime,CoreMainNorm,CoreGuestNorm,CoreMiddleNorm,CoreMainP,CoreGuestP,CoreMiddleP,IntMainP,IntGuestP,IntMiddleP,PrinMainNorm,PrinGuestNorm,PrinMiddleNorm,PrinMainP,PrinGuestP,PrinMiddleP,B365MainNorm,B365GuestNorm,B365MiddleNorm,B365MainP,B365GuestP,B365MiddleP,DensityMain1,DensityGuest1,DensityMiddle1,DensityMain2,DensityGuest2,DensityMiddle2,DensityMain3,DensityGuest3,DensityMiddle3 from t_norm where MatchId = '" + nId + "' ORDER BY OddTime DESC"
+	sql := "SELECT MatchId,MainName,GuestName,CompCount,Main10Norm,Middle10Norm,Guest10Norm,Ep3,Ep1,Ep0,Main9Norm,Middle9Norm,Guest9Norm,OddTime,MatchTime,CoreMainNorm,CoreGuestNorm,CoreMiddleNorm,CoreMainP,CoreGuestP,CoreMiddleP,IntMainP,IntGuestP,IntMiddleP,PrinMainNorm,PrinGuestNorm,PrinMiddleNorm,PrinMainP,PrinGuestP,PrinMiddleP,B365MainNorm,B365GuestNorm,B365MiddleNorm,B365MainP,B365GuestP,B365MiddleP,DensityMain1,DensityGuest1,DensityMiddle1,DensityMain2,DensityGuest2,DensityMiddle2,DensityMain3,DensityGuest3,DensityMiddle3,MainMaxName,MiddleMaxName,GuestMaxName,BaseMainMaxValue1,BaseMainMaxValue2,BaseMiddleMaxValue1,BaseMiddleMaxValue2,BaseGuestMaxValue1 ,BaseGuestMaxValue2 ,MainFirstMax,MainSecondMax,MiddleFirstMax ,MiddleSecondMax,GuestFirstMax,GuestSecondMax from t_norm where MatchId = '" + nId + "' ORDER BY OddTime DESC"
 	selDB, err := db.Query(sql)
 	if err != nil {
 		panic(err.Error())
@@ -555,11 +766,11 @@ func Show(w http.ResponseWriter, r *http.Request) {
 	match := norm{}
 	res := []norm{}
 	for selDB.Next() {
-		var MatchId, MainName, GuestName string
+		var MatchId, MainName, GuestName,MainMaxName,MiddleMaxName,GuestMaxName string
 		var CompCount int
-		var Main10Norm, Middle10Norm, Guest10Norm, MainP, MiddleP, GuestP, Main9Norm, Middle9Norm, Guest9Norm, CoreMainNorm, CoreGuestNorm, CoreMiddleNorm, CoreMainP, CoreGuestP, CoreMiddleP, IntMainP, IntGuestP, IntMiddleP,PrinMainNorm,PrinGuestNorm,PrinMiddleNorm,PrinMainP,PrinGuestP,PrinMiddleP,B365MainNorm,B365GuestNorm,B365MiddleNorm,B365MainP,B365GuestP,B365MiddleP,DensityMain1,DensityGuest1,DensityMiddle1,DensityMain2,DensityGuest2,DensityMiddle2,DensityMain3,DensityGuest3,DensityMiddle3 float64
+		var Main10Norm, Middle10Norm, Guest10Norm, MainP, MiddleP, GuestP, Main9Norm, Middle9Norm, Guest9Norm, CoreMainNorm, CoreGuestNorm, CoreMiddleNorm, CoreMainP, CoreGuestP, CoreMiddleP, IntMainP, IntGuestP, IntMiddleP,PrinMainNorm,PrinGuestNorm,PrinMiddleNorm,PrinMainP,PrinGuestP,PrinMiddleP,B365MainNorm,B365GuestNorm,B365MiddleNorm,B365MainP,B365GuestP,B365MiddleP,DensityMain1,DensityGuest1,DensityMiddle1,DensityMain2,DensityGuest2,DensityMiddle2,DensityMain3,DensityGuest3,DensityMiddle3,BaseMainMaxValue1,BaseMainMaxValue2,BaseMiddleMaxValue1,BaseMiddleMaxValue2,BaseGuestMaxValue1,BaseGuestMaxValue2,MainFirstMax,MainSecondMax,MiddleFirstMax,MiddleSecondMax,GuestFirstMax,GuestSecondMax float64
 		var OddTime, MatchTime time.Time
-		err = selDB.Scan(&MatchId, &MainName, &GuestName, &CompCount, &Main10Norm, &Middle10Norm, &Guest10Norm, &MainP, &MiddleP, &GuestP, &Main9Norm, &Middle9Norm, &Guest9Norm, &OddTime, &MatchTime, &CoreMainNorm, &CoreGuestNorm, &CoreMiddleNorm, &CoreMainP, &CoreGuestP, &CoreMiddleP, &IntMainP, &IntGuestP, &IntMiddleP, &PrinMainNorm,&PrinGuestNorm,&PrinMiddleNorm,&PrinMainP,&PrinGuestP,&PrinMiddleP,&B365MainNorm,&B365GuestNorm,&B365MiddleNorm,&B365MainP,&B365GuestP,&B365MiddleP,&DensityMain1,&DensityGuest1,&DensityMiddle1,&DensityMain2,&DensityGuest2,&DensityMiddle2,&DensityMain3,&DensityGuest3,&DensityMiddle3)
+		err = selDB.Scan(&MatchId, &MainName, &GuestName, &CompCount, &Main10Norm, &Middle10Norm, &Guest10Norm, &MainP, &MiddleP, &GuestP, &Main9Norm, &Middle9Norm, &Guest9Norm, &OddTime, &MatchTime, &CoreMainNorm, &CoreGuestNorm, &CoreMiddleNorm, &CoreMainP, &CoreGuestP, &CoreMiddleP, &IntMainP, &IntGuestP, &IntMiddleP, &PrinMainNorm,&PrinGuestNorm,&PrinMiddleNorm,&PrinMainP,&PrinGuestP,&PrinMiddleP,&B365MainNorm,&B365GuestNorm,&B365MiddleNorm,&B365MainP,&B365GuestP,&B365MiddleP,&DensityMain1,&DensityGuest1,&DensityMiddle1,&DensityMain2,&DensityGuest2,&DensityMiddle2,&DensityMain3,&DensityGuest3,&DensityMiddle3,&MainMaxName,&MiddleMaxName,&GuestMaxName,&BaseMainMaxValue1,&BaseMainMaxValue2,&BaseMiddleMaxValue1,&BaseMiddleMaxValue2,&BaseGuestMaxValue1,&BaseGuestMaxValue2,&MainFirstMax,&MainSecondMax,&MiddleFirstMax,&MiddleSecondMax,&GuestFirstMax,&GuestSecondMax)
 		if err != nil {
 			panic(err.Error())
 		}
@@ -611,6 +822,22 @@ func Show(w http.ResponseWriter, r *http.Request) {
 		match.DensityMain3 = DensityMain3
 		match.DensityGuest3 = DensityGuest3
 		match.DensityMiddle3 = DensityMiddle3
+
+		match.MainMaxName = MainMaxName
+		match.MiddleMaxName = MiddleMaxName
+		match.GuestMaxName = GuestMaxName
+		match.BaseMainMaxValue1 = BaseMainMaxValue1
+		match.BaseMainMaxValue2 = BaseMainMaxValue2
+		match.BaseMiddleMaxValue1 = BaseMiddleMaxValue1
+		match.BaseMiddleMaxValue2 = BaseMiddleMaxValue2
+		match.BaseGuestMaxValue1 = BaseGuestMaxValue1
+		match.BaseGuestMaxValue2 = BaseGuestMaxValue2
+		match.MainFirstMax = MainFirstMax
+		match.MainSecondMax = MainSecondMax
+		match.MiddleFirstMax = MiddleFirstMax
+		match.MiddleSecondMax = MiddleSecondMax
+		match.GuestFirstMax = GuestFirstMax
+		match.GuestSecondMax = GuestSecondMax
 		res = append(res, match)
 	}
 	HandleData(res,nId,match.CompCount)
