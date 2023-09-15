@@ -1,0 +1,16 @@
+ALTER TABLE t_norm ADD COLUMN MainMaxName VARCHAR(255) DEFAULT "1";
+ALTER TABLE t_norm ADD COLUMN MiddleMaxName VARCHAR(255) DEFAULT "1";
+ALTER TABLE t_norm ADD COLUMN GuestMaxName VARCHAR(255) DEFAULT "1";
+
+ALTER TABLE t_norm ADD COLUMN BaseMainMaxValue1 double DEFAULT 0;
+ALTER TABLE t_norm ADD COLUMN BaseMainMaxValue2 double DEFAULT 0;
+ALTER TABLE t_norm ADD COLUMN BaseMiddleMaxValue1 double DEFAULT 0;
+ALTER TABLE t_norm ADD COLUMN BaseMiddleMaxValue2 double DEFAULT 0;
+ALTER TABLE t_norm ADD COLUMN BaseGuestMaxValue1 double DEFAULT 0;
+ALTER TABLE t_norm ADD COLUMN BaseGuestMaxValue2 double DEFAULT 0;
+ALTER TABLE t_norm ADD COLUMN MainFirstMax double DEFAULT 0;
+ALTER TABLE t_norm ADD COLUMN MainSecondMax double DEFAULT 0;
+ALTER TABLE t_norm ADD COLUMN MiddleFirstMax double DEFAULT 0;
+ALTER TABLE t_norm ADD COLUMN MiddleSecondMax double DEFAULT 0;
+ALTER TABLE t_norm ADD COLUMN GuestFirstMax double DEFAULT 0;
+ALTER TABLE t_norm ADD COLUMN GuestSecondMax double DEFAULT 0;
