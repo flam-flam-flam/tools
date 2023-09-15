@@ -62,8 +62,8 @@ func (this *EuroLastProcesser) Startup() {
 	}
 
 	for i, v := range this.MatchLastList {
-		if !this.SingleThread && i%1000 == 0 { //10000个比赛一个spider,一个赛季大概有30万场比赛,最多30spider
-			//先将前面的spider启动
+		if !this.SingleThread && i%1000 == 0 { 
+
 			newSpider.SetDownloader(down.NewMWin007Downloader())
 			newSpider = newSpider.AddPipeline(pipeline.NewPipelineConsole())
 			newSpider.SetSleepTime("rand", win007.SLEEP_RAND_S, win007.SLEEP_RAND_E)
@@ -119,7 +119,7 @@ func (this *EuroLastProcesser) Process(p *page.Page) {
 	}
 
 	//base.Log.Info("hdata_str", hdata_str, "URL:", request.Url)
-	// 获取script脚本中的，博彩公司信息
+
 	hdata_str = strings.Replace(hdata_str, ";", "", 1)
 	hdata_str = strings.Replace(hdata_str, "var hData = ", "", 1)
 	if hdata_str == "" {
@@ -179,7 +179,7 @@ func (this *EuroLastProcesser) hdata_process(url string, hdata_str string) {
 		//	comp_list_slice = append(comp_list_slice, comp)
 		//}
 
-		//判断公司ID是否在配置的波菜公司队列中
+	
 		if len(this.CompWin007Ids) > 0 {
 			var equal bool
 			for _, id := range this.CompWin007Ids {
