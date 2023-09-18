@@ -14,3 +14,12 @@ ALTER TABLE t_norm ADD COLUMN MiddleFirstMax double DEFAULT 0;
 ALTER TABLE t_norm ADD COLUMN MiddleSecondMax double DEFAULT 0;
 ALTER TABLE t_norm ADD COLUMN GuestFirstMax double DEFAULT 0;
 ALTER TABLE t_norm ADD COLUMN GuestSecondMax double DEFAULT 0;
+
+
+
+ALTER TABLE t_norm ADD COLUMN MainMaxAddStd double DEFAULT 0;
+ALTER TABLE t_norm ADD COLUMN MiddleMaxAddStd double DEFAULT 0;
+ALTER TABLE t_norm ADD COLUMN GuestMaxAddStd double DEFAULT 0;
+ALTER TABLE t_norm ADD COLUMN MainMeanAdd3Std double DEFAULT 0;
+ALTER TABLE t_norm ADD COLUMN MiddleMeanAdd3Std double DEFAULT 0;
+ALTER TABLE t_norm ADD COLUMN GuestMeanAdd3Std double DEFAULT 0;
