@@ -62,8 +62,8 @@ func (this *EuroLastProcesser) Startup() {
 	}
 
 	for i, v := range this.MatchLastList {
-		if !this.SingleThread && i%1000 == 0 { 
-
+		if !this.SingleThread && i%1000 == 0 { //10000个比赛一个spider,一个赛季大概有30万场比赛,最多30spider
+			//先将前面的spider启动
 			newSpider.SetDownloader(down.NewMWin007Downloader())
 			newSpider = newSpider.AddPipeline(pipeline.NewPipelineConsole())
 			newSpider.SetSleepTime("rand", win007.SLEEP_RAND_S, win007.SLEEP_RAND_E)
@@ -119,7 +119,7 @@ func (this *EuroLastProcesser) Process(p *page.Page) {
 	}
 
 	//base.Log.Info("hdata_str", hdata_str, "URL:", request.Url)
-
+	// 获取script脚本中的，博彩公司信息
 	hdata_str = strings.Replace(hdata_str, ";", "", 1)
 	hdata_str = strings.Replace(hdata_str, "var hData = ", "", 1)
 	if hdata_str == "" {
@@ -179,7 +179,7 @@ func (this *EuroLastProcesser) hdata_process(url string, hdata_str string) {
 		//	comp_list_slice = append(comp_list_slice, comp)
 		//}
 
-	
+		//判断公司ID是否在配置的波菜公司队列中
 		if len(this.CompWin007Ids) > 0 {
 			var equal bool
 			for _, id := range this.CompWin007Ids {
@@ -355,12 +355,12 @@ func (this *EuroLastProcesser) hdata_process(url string, hdata_str string) {
 		continue
 	}
 
-	baseMainMaxValue1 := decimal3(average_main_10 + 1.3 * std_main_10)
-	baseMainMaxValue2 := decimal3(average_main_10 + 1.62 * std_main_10)
-	baseMiddleMaxValue1 := decimal3(average_middle_10 + 1.3 * std_middle_10)
-	baseMiddleMaxValue2 := decimal3(average_middle_10 + 1.62 * std_middle_10)
-	baseGuestMaxValue1 := decimal3(average_guest_10 + 1.3 * std_guest_10)
-	baseGuestMaxValue2 := decimal3(average_guest_10 + 1.62 * std_guest_10)
+	baseMainMaxValue1 := decimal3(average_main_10 + 1.905 * std_main_10)
+	baseMainMaxValue2 := decimal3(average_main_10 + 2.305 * std_main_10)
+	baseMiddleMaxValue1 := decimal3(average_middle_10 + 1.905 * std_middle_10)
+	baseMiddleMaxValue2 := decimal3(average_middle_10 + 2.305 * std_middle_10)
+	baseGuestMaxValue1 := decimal3(average_guest_10 + 1.905 * std_guest_10)
+	baseGuestMaxValue2 := decimal3(average_guest_10 + 2.305 * std_guest_10)
 
 	var mainFirstMax float64
 	var mainSecondMax float64
@@ -395,6 +395,11 @@ func (this *EuroLastProcesser) hdata_process(url string, hdata_str string) {
 		}
 	}
 
+	if(mainFirstMax < IntMainP){
+		mainFirstMax = IntMainP
+		firstFlag = 10
+	}
+
 	mainMaxNameString := ""
 	if(firstFlag == 0){
 		mainMaxNameString = mainMaxNameString + "12bet_"
@@ -416,6 +421,8 @@ func (this *EuroLastProcesser) hdata_process(url string, hdata_str string) {
 		mainMaxNameString = mainMaxNameString + "365_"
 	}else if(firstFlag == 9){//177
 		mainMaxNameString = mainMaxNameString + "prinn_"
+	}else if(firstFlag == 10){
+		mainMaxNameString = mainMaxNameString + "yingli_"
 	}
 
 	if(secondFlag == 0){
@@ -455,6 +462,10 @@ func (this *EuroLastProcesser) hdata_process(url string, hdata_str string) {
 			secondFlag = flag
 		}
 	}
+	if(middleFirstMax < IntMiddleP){
+		middleFirstMax = IntMiddleP
+		firstFlag = 10
+	}
 
 	middleMaxNameString := ""
 	if(firstFlag == 0){
@@ -477,6 +488,8 @@ func (this *EuroLastProcesser) hdata_process(url string, hdata_str string) {
 		middleMaxNameString = middleMaxNameString + "365_"
 	}else if(firstFlag == 9){//177
 		middleMaxNameString = middleMaxNameString + "prinn_"
+	}else if(firstFlag == 10){
+		middleMaxNameString = middleMaxNameString + "yingli_"
 	}
 
 	if(secondFlag == 0){
@@ -517,6 +530,11 @@ func (this *EuroLastProcesser) hdata_process(url string, hdata_str string) {
 		}
 	}
 
+	if(guestFirstMax < IntGuestP){
+		guestFirstMax = IntGuestP
+		firstFlag = 10
+	}
+
 	guestMaxNameString := ""
 	if(firstFlag == 0){
 		guestMaxNameString = guestMaxNameString + "12bet_"
@@ -538,6 +556,8 @@ func (this *EuroLastProcesser) hdata_process(url string, hdata_str string) {
 		guestMaxNameString = guestMaxNameString + "365_"
 	}else if(firstFlag == 9){//177
 		guestMaxNameString = guestMaxNameString + "prinn_"
+	}else if(firstFlag == 10){
+		guestMaxNameString = guestMaxNameString + "yingli_"
 	}
 
 	if(secondFlag == 0){
@@ -578,6 +598,14 @@ func (this *EuroLastProcesser) hdata_process(url string, hdata_str string) {
 	norm.MiddleSecondMax = middleSecondMax
 	norm.GuestFirstMax = guestFirstMax
 	norm.GuestSecondMax = guestSecondMax
+
+
+	norm.MainMaxAddStd = decimal3(mainFirstMax + std_main_10)
+	norm.MiddleMaxAddStd = decimal3(middleFirstMax + std_middle_10)
+	norm.GuestMaxAddStd = decimal3(guestFirstMax + std_guest_10)
+	norm.MainMeanAdd3Std = decimal3(average_main_10 + 3 * std_main_10)
+	norm.MiddleMeanAdd3Std = decimal3(average_middle_10 + 3 * std_middle_10)
+	norm.GuestMeanAdd3Std = decimal3(average_guest_10 + 3 * std_guest_10)
 
 	norm.MatchTime = time.Now()
 	norm.CompCount = count
