@@ -86,6 +86,12 @@ type norm struct {
 	MiddleSecondMax float64
 	GuestFirstMax float64
 	GuestSecondMax float64
+	MainMaxAddStd      float64
+	MiddleMaxAddStd    float64
+	GuestMaxAddStd     float64
+	MainMeanAdd3Std    float64
+	MiddleMeanAdd3Std  float64
+	GuestMeanAdd3Std   float64
 	OddTime        string
 	MatchTime      time.Time
 }
@@ -120,7 +126,7 @@ var tmpl = template.Must(template.ParseGlob("D:/foot-master/foot-web/service/for
 
 func Index(w http.ResponseWriter, r *http.Request) {
 	db := dbConn()
-	selDB, err := db.Query("SELECT la.Id,la.MainTeamId,la.GuestTeamId,la.MatchDate,tl.Name FROM foot.t_match_his la left join t_league tl  ON la.LeagueId=tl.Id WHERE MatchDate > DATE_SUB(NOW(),INTERVAL 2500 MINUTE) AND MatchDate < DATE_ADD(NOW(), INTERVAL 147 MINUTE) ORDER BY MatchDate ASC")
+	selDB, err := db.Query("SELECT la.Id,la.MainTeamId,la.GuestTeamId,la.MatchDate,tl.Name FROM foot.t_match_his la left join t_league tl  ON la.LeagueId=tl.Id WHERE MatchDate > DATE_SUB(NOW(),INTERVAL 150 MINUTE) AND MatchDate < DATE_ADD(NOW(), INTERVAL 147 MINUTE) ORDER BY MatchDate ASC")
 	if err != nil {
 		panic(err.Error())
 	}
@@ -206,6 +212,13 @@ func HandleData(dataList []norm, matchId string,CompCount int){
 	GuestFirstMax := make([]opts.LineData, 0)
 	GuestSecondMax := make([]opts.LineData, 0)
 
+	MainMaxAddStd  := make([]opts.LineData, 0)
+	MiddleMaxAddStd := make([]opts.LineData, 0)
+	GuestMaxAddStd := make([]opts.LineData, 0)
+	MainMeanAdd3Std := make([]opts.LineData, 0)
+	MiddleMeanAdd3Std := make([]opts.LineData, 0)
+	GuestMeanAdd3Std := make([]opts.LineData, 0)
+
 
 	items12BetMainNorm := make([]opts.LineData, 0) //12bet
 	items12BetMainP := make([]opts.LineData, 0) //12bet
@@ -273,6 +286,12 @@ func HandleData(dataList []norm, matchId string,CompCount int){
 		GuestFirstMax = append(GuestFirstMax,opts.LineData{Value: dataList[i].GuestFirstMax})
 		GuestSecondMax = append(GuestSecondMax,opts.LineData{Value: dataList[i].GuestSecondMax})
 
+		MainMaxAddStd = append(MainMaxAddStd,opts.LineData{Value: dataList[i].MainMaxAddStd})
+		MiddleMaxAddStd = append(MiddleMaxAddStd,opts.LineData{Value: dataList[i].MiddleMaxAddStd})
+		GuestMaxAddStd = append(GuestMaxAddStd,opts.LineData{Value: dataList[i].GuestMaxAddStd})
+		MainMeanAdd3Std = append(MainMeanAdd3Std,opts.LineData{Value: dataList[i].MainMeanAdd3Std})
+		MiddleMeanAdd3Std = append(MiddleMeanAdd3Std,opts.LineData{Value: dataList[i].MiddleMeanAdd3Std})
+		GuestMeanAdd3Std = append(GuestMeanAdd3Std,opts.LineData{Value: dataList[i].GuestMeanAdd3Std})
 
 		fruits = append(fruits, dataList[i].OddTime)
 		items12BetMainNorm = append(items12BetMainNorm, opts.LineData{Value: dataList[i].Main10Norm})
@@ -316,15 +335,18 @@ func HandleData(dataList []norm, matchId string,CompCount int){
 
 	page := components.NewPage()
 	page.AddCharts(
-		lineMainN(items12BetMainNorm,fruits,itemsYiMainNorm,itemsYingLiMainNorm,CompCount,itemsweideMainNorm,itemsbwinMainNorm),
-		lineMainP(items12BetMainP,fruits,itemsYiMainP,itemsYingLiMainP,CompCount,itemsweideMainP,itemsbwinMainP),
+		//lineMainN(items12BetMainNorm,fruits,itemsYiMainNorm,itemsYingLiMainNorm,CompCount,itemsweideMainNorm,itemsbwinMainNorm),
+		//lineMainP(items12BetMainP,fruits,itemsYiMainP,itemsYingLiMainP,CompCount,itemsweideMainP,itemsbwinMainP),
 		lineMainAnaly(companysMain,BaseMainMaxValue1,BaseMainMaxValue2,MainFirstMax,MainSecondMax,CompCount),
-		lineMiddleN(items12BetMiddleNorm,fruits,itemsYiMiddleNorm,itemsYingLiMiddleNorm,CompCount,itemsweideMiddleNorm,itemsbwinMiddleNorm),
-		lineMiddleP(items12BetMiddleP,fruits,itemsYiMiddleP,itemsYingLiMiddleP,CompCount,itemsweideMiddleP,itemsbwinMiddleP),
+		lineMainMax(fruits,MainMeanAdd3Std,MainMaxAddStd,CompCount),
+		//lineMiddleN(items12BetMiddleNorm,fruits,itemsYiMiddleNorm,itemsYingLiMiddleNorm,CompCount,itemsweideMiddleNorm,itemsbwinMiddleNorm),
+		//lineMiddleP(items12BetMiddleP,fruits,itemsYiMiddleP,itemsYingLiMiddleP,CompCount,itemsweideMiddleP,itemsbwinMiddleP),
 		lineMiddleAnaly(companysMiddle,BaseMiddleMaxValue1,BaseMiddleMaxValue2,MiddleFirstMax,MiddleSecondMax,CompCount),
-		lineGuestN(items12BetGuestNorm,fruits,itemsYiGuestNorm,itemsYingLiGuestNorm,CompCount,itemsweideGuestNorm,itemsbwinGuestNorm),
-		lineGuestP(items12BetGuestP,fruits,itemsYiGuestP,itemsYingLiGuestP,CompCount,itemsweideGuestP,itemsbwinGuestP),
+		lineMiddleMax(fruits,MiddleMeanAdd3Std,MiddleMaxAddStd,CompCount),
+		//lineGuestN(items12BetGuestNorm,fruits,itemsYiGuestNorm,itemsYingLiGuestNorm,CompCount,itemsweideGuestNorm,itemsbwinGuestNorm),
+		//lineGuestP(items12BetGuestP,fruits,itemsYiGuestP,itemsYingLiGuestP,CompCount,itemsweideGuestP,itemsbwinGuestP),
 		lineGuestAnaly(companysGuest,BaseGuestMaxValue1,BaseGuestMaxValue2,GuestFirstMax,GuestSecondMax,CompCount),
+		lineGuestMax(fruits,GuestMeanAdd3Std,GuestMaxAddStd,CompCount),
 	)
 	str_name := "T-" + matchId
 	//page.PageTitle = str_name
@@ -336,6 +358,118 @@ func HandleData(dataList []norm, matchId string,CompCount int){
 		panic(err)
 	}
 	page.Render(io.MultiWriter(f))
+}
+
+func lineMainMax(fruits []string, MeanAdd3Std []opts.LineData,MaxAddStd []opts.LineData,CompCount int) *charts.Line {
+
+	line := charts.NewLine()
+	title := "主meanAddStd_"+ strconv.Itoa(CompCount)
+	line.SetGlobalOptions(
+		charts.WithTitleOpts(opts.Title{
+			Title: title,
+		}),
+		charts.WithInitializationOpts(opts.Initialization{
+			Theme: "shine",
+			Width: "720px",
+			Height: "500px",
+		}),
+		charts.WithXAxisOpts(opts.XAxis{
+			AxisLabel: &opts.AxisLabel{
+				Show:         true,
+				Interval:     "0",
+				Rotate:       30,
+				ShowMinLabel: true,
+				ShowMaxLabel: true,
+			},
+		}),
+		charts.WithYAxisOpts(opts.YAxis{Scale: true,Min: "dataMin", Max: "dataMax"}),
+	)
+	line.SetXAxis(fruits).
+		AddSeries("MeanAdd3Std", MeanAdd3Std).
+		AddSeries("MaxAddStd", MaxAddStd).
+		SetSeriesOptions(
+			charts.WithLineChartOpts(opts.LineChart{
+				ShowSymbol: true,
+			}),
+			charts.WithLabelOpts(opts.Label{
+				Show: true,
+			}),
+		)
+	return line
+}
+func lineMiddleMax(fruits []string, MeanAdd3Std []opts.LineData,MaxAddStd []opts.LineData,CompCount int) *charts.Line {
+
+	line := charts.NewLine()
+	title := "平meanAddStd_"+ strconv.Itoa(CompCount)
+	line.SetGlobalOptions(
+		charts.WithTitleOpts(opts.Title{
+			Title: title,
+		}),
+		charts.WithInitializationOpts(opts.Initialization{
+			Theme: "shine",
+			Width: "720px",
+			Height: "500px",
+		}),
+		charts.WithXAxisOpts(opts.XAxis{
+			AxisLabel: &opts.AxisLabel{
+				Show:         true,
+				Interval:     "0",
+				Rotate:       30,
+				ShowMinLabel: true,
+				ShowMaxLabel: true,
+			},
+		}),
+		charts.WithYAxisOpts(opts.YAxis{Scale: true,Min: "dataMin", Max: "dataMax"}),
+	)
+	line.SetXAxis(fruits).
+		AddSeries("MeanAdd3Std", MeanAdd3Std).
+		AddSeries("MaxAddStd", MaxAddStd).
+		SetSeriesOptions(
+			charts.WithLineChartOpts(opts.LineChart{
+				ShowSymbol: true,
+			}),
+			charts.WithLabelOpts(opts.Label{
+				Show: true,
+			}),
+		)
+	return line
+}
+func lineGuestMax(fruits []string, MeanAdd3Std []opts.LineData,MaxAddStd []opts.LineData,CompCount int) *charts.Line {
+
+	line := charts.NewLine()
+	title := "客meanAddStd_"+ strconv.Itoa(CompCount)
+	line.SetGlobalOptions(
+		charts.WithTitleOpts(opts.Title{
+			Title: title,
+		}),
+		charts.WithInitializationOpts(opts.Initialization{
+			Theme: "shine",
+			Width: "720px",
+			Height: "500px",
+		}),
+		charts.WithXAxisOpts(opts.XAxis{
+			AxisLabel: &opts.AxisLabel{
+				Show:         true,
+				Interval:     "0",
+				Rotate:       30,
+				ShowMinLabel: true,
+				ShowMaxLabel: true,
+			},
+		}),
+		charts.WithYAxisOpts(opts.YAxis{Scale: true,Min: "dataMin", Max: "dataMax"}),
+	)
+	line.SetXAxis(fruits).
+		AddSeries("MeanAdd3Std", MeanAdd3Std).
+		AddSeries("MaxAddStd", MaxAddStd).
+		SetSeriesOptions(
+			charts.WithLineChartOpts(opts.LineChart{
+				ShowSymbol: true,
+			}),
+			charts.WithLabelOpts(opts.Label{
+				Show: true,
+			}),
+		)
+	return line
 }
 
 func lineMainAnaly(fruits []string, BaseMaxValue1 []opts.LineData,BaseMaxValue2 []opts.LineData,FirstMax []opts.LineData,SecondMax []opts.LineData,CompCount int) *charts.Line {
@@ -363,10 +497,10 @@ func lineMainAnaly(fruits []string, BaseMaxValue1 []opts.LineData,BaseMaxValue2 
 		charts.WithYAxisOpts(opts.YAxis{Scale: true,Min: "dataMin", Max: "dataMax"}),
 	)
 	line.SetXAxis(fruits).
-		AddSeries("base1.3", BaseMaxValue1).
+		AddSeries("base1.62", BaseMaxValue1).
 		AddSeries("maxFirst", FirstMax).
 		AddSeries("maxSecond", SecondMax).
-		AddSeries("base1.62", BaseMaxValue2).
+		AddSeries("base1.85", BaseMaxValue2).
 		SetSeriesOptions(
 			charts.WithLineChartOpts(opts.LineChart{
 				ShowSymbol: true,
@@ -403,10 +537,10 @@ func lineMiddleAnaly(fruits []string, BaseMaxValue1 []opts.LineData,BaseMaxValue
 		charts.WithYAxisOpts(opts.YAxis{Scale: true,Min: "dataMin", Max: "dataMax"}),
 	)
 	line.SetXAxis(fruits).
-		AddSeries("base1.3", BaseMaxValue1).
+		AddSeries("base1.62", BaseMaxValue1).
 		AddSeries("maxFirst", FirstMax).
 		AddSeries("maxSecond", SecondMax).
-		AddSeries("base1.62", BaseMaxValue2).
+		AddSeries("base1.85", BaseMaxValue2).
 		SetSeriesOptions(
 			charts.WithLineChartOpts(opts.LineChart{
 				ShowSymbol: true,
@@ -442,10 +576,10 @@ func lineGuestAnaly(fruits []string, BaseMaxValue1 []opts.LineData,BaseMaxValue2
 		charts.WithYAxisOpts(opts.YAxis{Scale: true,Min: "dataMin", Max: "dataMax"}),
 	)
 	line.SetXAxis(fruits).
-		AddSeries("base1.3", BaseMaxValue1).
+		AddSeries("base1.62", BaseMaxValue1).
 		AddSeries("maxFirst", FirstMax).
 		AddSeries("maxSecond", SecondMax).
-		AddSeries("base1.62", BaseMaxValue2).
+		AddSeries("base1.85", BaseMaxValue2).
 		SetSeriesOptions(
 			charts.WithLineChartOpts(opts.LineChart{
 				ShowSymbol: true,
@@ -758,7 +892,7 @@ func lineSmooth() *charts.Line {
 func Show(w http.ResponseWriter, r *http.Request) {
 	db := dbConn()
 	nId := r.URL.Query().Get("id")
-	sql := "SELECT MatchId,MainName,GuestName,CompCount,Main10Norm,Middle10Norm,Guest10Norm,Ep3,Ep1,Ep0,Main9Norm,Middle9Norm,Guest9Norm,OddTime,MatchTime,CoreMainNorm,CoreGuestNorm,CoreMiddleNorm,CoreMainP,CoreGuestP,CoreMiddleP,IntMainP,IntGuestP,IntMiddleP,PrinMainNorm,PrinGuestNorm,PrinMiddleNorm,PrinMainP,PrinGuestP,PrinMiddleP,B365MainNorm,B365GuestNorm,B365MiddleNorm,B365MainP,B365GuestP,B365MiddleP,DensityMain1,DensityGuest1,DensityMiddle1,DensityMain2,DensityGuest2,DensityMiddle2,DensityMain3,DensityGuest3,DensityMiddle3,MainMaxName,MiddleMaxName,GuestMaxName,BaseMainMaxValue1,BaseMainMaxValue2,BaseMiddleMaxValue1,BaseMiddleMaxValue2,BaseGuestMaxValue1 ,BaseGuestMaxValue2 ,MainFirstMax,MainSecondMax,MiddleFirstMax ,MiddleSecondMax,GuestFirstMax,GuestSecondMax from t_norm where MatchId = '" + nId + "' ORDER BY OddTime DESC"
+	sql := "SELECT MatchId,MainName,GuestName,CompCount,Main10Norm,Middle10Norm,Guest10Norm,Ep3,Ep1,Ep0,Main9Norm,Middle9Norm,Guest9Norm,OddTime,MatchTime,CoreMainNorm,CoreGuestNorm,CoreMiddleNorm,CoreMainP,CoreGuestP,CoreMiddleP,IntMainP,IntGuestP,IntMiddleP,PrinMainNorm,PrinGuestNorm,PrinMiddleNorm,PrinMainP,PrinGuestP,PrinMiddleP,B365MainNorm,B365GuestNorm,B365MiddleNorm,B365MainP,B365GuestP,B365MiddleP,DensityMain1,DensityGuest1,DensityMiddle1,DensityMain2,DensityGuest2,DensityMiddle2,DensityMain3,DensityGuest3,DensityMiddle3,MainMaxName,MiddleMaxName,GuestMaxName,BaseMainMaxValue1,BaseMainMaxValue2,BaseMiddleMaxValue1,BaseMiddleMaxValue2,BaseGuestMaxValue1 ,BaseGuestMaxValue2 ,MainFirstMax,MainSecondMax,MiddleFirstMax ,MiddleSecondMax,GuestFirstMax,GuestSecondMax,MainMaxAddStd,MiddleMaxAddStd,GuestMaxAddStd,MainMeanAdd3Std,MiddleMeanAdd3Std,GuestMeanAdd3Std from t_norm where MatchId = '" + nId + "' ORDER BY OddTime DESC"
 	selDB, err := db.Query(sql)
 	if err != nil {
 		panic(err.Error())
@@ -768,9 +902,9 @@ func Show(w http.ResponseWriter, r *http.Request) {
 	for selDB.Next() {
 		var MatchId, MainName, GuestName,MainMaxName,MiddleMaxName,GuestMaxName string
 		var CompCount int
-		var Main10Norm, Middle10Norm, Guest10Norm, MainP, MiddleP, GuestP, Main9Norm, Middle9Norm, Guest9Norm, CoreMainNorm, CoreGuestNorm, CoreMiddleNorm, CoreMainP, CoreGuestP, CoreMiddleP, IntMainP, IntGuestP, IntMiddleP,PrinMainNorm,PrinGuestNorm,PrinMiddleNorm,PrinMainP,PrinGuestP,PrinMiddleP,B365MainNorm,B365GuestNorm,B365MiddleNorm,B365MainP,B365GuestP,B365MiddleP,DensityMain1,DensityGuest1,DensityMiddle1,DensityMain2,DensityGuest2,DensityMiddle2,DensityMain3,DensityGuest3,DensityMiddle3,BaseMainMaxValue1,BaseMainMaxValue2,BaseMiddleMaxValue1,BaseMiddleMaxValue2,BaseGuestMaxValue1,BaseGuestMaxValue2,MainFirstMax,MainSecondMax,MiddleFirstMax,MiddleSecondMax,GuestFirstMax,GuestSecondMax float64
+		var Main10Norm, Middle10Norm, Guest10Norm, MainP, MiddleP, GuestP, Main9Norm, Middle9Norm, Guest9Norm, CoreMainNorm, CoreGuestNorm, CoreMiddleNorm, CoreMainP, CoreGuestP, CoreMiddleP, IntMainP, IntGuestP, IntMiddleP,PrinMainNorm,PrinGuestNorm,PrinMiddleNorm,PrinMainP,PrinGuestP,PrinMiddleP,B365MainNorm,B365GuestNorm,B365MiddleNorm,B365MainP,B365GuestP,B365MiddleP,DensityMain1,DensityGuest1,DensityMiddle1,DensityMain2,DensityGuest2,DensityMiddle2,DensityMain3,DensityGuest3,DensityMiddle3,BaseMainMaxValue1,BaseMainMaxValue2,BaseMiddleMaxValue1,BaseMiddleMaxValue2,BaseGuestMaxValue1,BaseGuestMaxValue2,MainFirstMax,MainSecondMax,MiddleFirstMax,MiddleSecondMax,GuestFirstMax,GuestSecondMax,MainMaxAddStd,MiddleMaxAddStd,GuestMaxAddStd,MainMeanAdd3Std,MiddleMeanAdd3Std,GuestMeanAdd3Std float64
 		var OddTime, MatchTime time.Time
-		err = selDB.Scan(&MatchId, &MainName, &GuestName, &CompCount, &Main10Norm, &Middle10Norm, &Guest10Norm, &MainP, &MiddleP, &GuestP, &Main9Norm, &Middle9Norm, &Guest9Norm, &OddTime, &MatchTime, &CoreMainNorm, &CoreGuestNorm, &CoreMiddleNorm, &CoreMainP, &CoreGuestP, &CoreMiddleP, &IntMainP, &IntGuestP, &IntMiddleP, &PrinMainNorm,&PrinGuestNorm,&PrinMiddleNorm,&PrinMainP,&PrinGuestP,&PrinMiddleP,&B365MainNorm,&B365GuestNorm,&B365MiddleNorm,&B365MainP,&B365GuestP,&B365MiddleP,&DensityMain1,&DensityGuest1,&DensityMiddle1,&DensityMain2,&DensityGuest2,&DensityMiddle2,&DensityMain3,&DensityGuest3,&DensityMiddle3,&MainMaxName,&MiddleMaxName,&GuestMaxName,&BaseMainMaxValue1,&BaseMainMaxValue2,&BaseMiddleMaxValue1,&BaseMiddleMaxValue2,&BaseGuestMaxValue1,&BaseGuestMaxValue2,&MainFirstMax,&MainSecondMax,&MiddleFirstMax,&MiddleSecondMax,&GuestFirstMax,&GuestSecondMax)
+		err = selDB.Scan(&MatchId, &MainName, &GuestName, &CompCount, &Main10Norm, &Middle10Norm, &Guest10Norm, &MainP, &MiddleP, &GuestP, &Main9Norm, &Middle9Norm, &Guest9Norm, &OddTime, &MatchTime, &CoreMainNorm, &CoreGuestNorm, &CoreMiddleNorm, &CoreMainP, &CoreGuestP, &CoreMiddleP, &IntMainP, &IntGuestP, &IntMiddleP, &PrinMainNorm,&PrinGuestNorm,&PrinMiddleNorm,&PrinMainP,&PrinGuestP,&PrinMiddleP,&B365MainNorm,&B365GuestNorm,&B365MiddleNorm,&B365MainP,&B365GuestP,&B365MiddleP,&DensityMain1,&DensityGuest1,&DensityMiddle1,&DensityMain2,&DensityGuest2,&DensityMiddle2,&DensityMain3,&DensityGuest3,&DensityMiddle3,&MainMaxName,&MiddleMaxName,&GuestMaxName,&BaseMainMaxValue1,&BaseMainMaxValue2,&BaseMiddleMaxValue1,&BaseMiddleMaxValue2,&BaseGuestMaxValue1,&BaseGuestMaxValue2,&MainFirstMax,&MainSecondMax,&MiddleFirstMax,&MiddleSecondMax,&GuestFirstMax,&GuestSecondMax,&MainMaxAddStd,&MiddleMaxAddStd,&GuestMaxAddStd,&MainMeanAdd3Std,&MiddleMeanAdd3Std,&GuestMeanAdd3Std)
 		if err != nil {
 			panic(err.Error())
 		}
@@ -838,6 +972,12 @@ func Show(w http.ResponseWriter, r *http.Request) {
 		match.MiddleSecondMax = MiddleSecondMax
 		match.GuestFirstMax = GuestFirstMax
 		match.GuestSecondMax = GuestSecondMax
+		match.MainMaxAddStd = MainMaxAddStd
+		match.MiddleMaxAddStd = MiddleMaxAddStd
+		match.GuestMaxAddStd = GuestMaxAddStd
+		match.MainMeanAdd3Std = MainMeanAdd3Std
+		match.MiddleMeanAdd3Std = MiddleMeanAdd3Std
+		match.GuestMeanAdd3Std = GuestMeanAdd3Std
 		res = append(res, match)
 	}
 	HandleData(res,nId,match.CompCount)
