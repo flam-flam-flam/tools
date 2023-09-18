@@ -603,9 +603,9 @@ func (this *EuroLastProcesser) hdata_process(url string, hdata_str string) {
 	norm.MainMaxAddStd = decimal3(mainFirstMax + std_main_10)
 	norm.MiddleMaxAddStd = decimal3(middleFirstMax + std_middle_10)
 	norm.GuestMaxAddStd = decimal3(guestFirstMax + std_guest_10)
-	norm.MainMeanAdd3Std = decimal3(average_main_10 + 3 * std_main_10)
-	norm.MiddleMeanAdd3Std = decimal3(average_middle_10 + 3 * std_middle_10)
-	norm.GuestMeanAdd3Std = decimal3(average_guest_10 + 3 * std_guest_10)
+	norm.MainMeanAdd3Std = decimal3(average_main_10 + 3 * std_main_10 + 0.005)
+	norm.MiddleMeanAdd3Std = decimal3(average_middle_10 + 3 * std_middle_10 + 0.005)
+	norm.GuestMeanAdd3Std = decimal3(average_guest_10 + 3 * std_guest_10 + 0.005)
 
 	norm.MatchTime = time.Now()
 	norm.CompCount = count
