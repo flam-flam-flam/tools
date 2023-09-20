@@ -30,7 +30,7 @@ type EuroLastProcesser struct {
 	//是否是单线程
 	SingleThread  bool
 	MatchLastList []*pojo.MatchLast
-	//博彩公司对应的win007id
+
 	CompWin007Ids      []string
 	Win007idMatchidMap map[string]string
 	MinuteDiff int
@@ -62,7 +62,7 @@ func (this *EuroLastProcesser) Startup() {
 	}
 
 	for i, v := range this.MatchLastList {
-		if !this.SingleThread && i%1000 == 0 { //10000个比赛一个spider,一个赛季大概有30万场比赛,最多30spider
+		if !this.SingleThread && i%1000 == 0 { 
 			//先将前面的spider启动
 			newSpider.SetDownloader(down.NewMWin007Downloader())
 			newSpider = newSpider.AddPipeline(pipeline.NewPipelineConsole())
@@ -119,7 +119,6 @@ func (this *EuroLastProcesser) Process(p *page.Page) {
 	}
 
 	//base.Log.Info("hdata_str", hdata_str, "URL:", request.Url)
-	// 获取script脚本中的，博彩公司信息
 	hdata_str = strings.Replace(hdata_str, ";", "", 1)
 	hdata_str = strings.Replace(hdata_str, "var hData = ", "", 1)
 	if hdata_str == "" {
@@ -178,8 +177,6 @@ func (this *EuroLastProcesser) hdata_process(url string, hdata_str string) {
 		//	comp.Id = strconv.Itoa(v.CId)
 		//	comp_list_slice = append(comp_list_slice, comp)
 		//}
-
-		//判断公司ID是否在配置的波菜公司队列中
 		if len(this.CompWin007Ids) > 0 {
 			var equal bool
 			for _, id := range this.CompWin007Ids {
@@ -355,12 +352,12 @@ func (this *EuroLastProcesser) hdata_process(url string, hdata_str string) {
 		continue
 	}
 
-	baseMainMaxValue1 := decimal3(average_main_10 + 1.905 * std_main_10)
-	baseMainMaxValue2 := decimal3(average_main_10 + 2.305 * std_main_10)
-	baseMiddleMaxValue1 := decimal3(average_middle_10 + 1.905 * std_middle_10)
-	baseMiddleMaxValue2 := decimal3(average_middle_10 + 2.305 * std_middle_10)
-	baseGuestMaxValue1 := decimal3(average_guest_10 + 1.905 * std_guest_10)
-	baseGuestMaxValue2 := decimal3(average_guest_10 + 2.305 * std_guest_10)
+	baseMainMaxValue1 := decimal3(average_main_10 + 1.96 * std_main_10)
+	baseMainMaxValue2 := decimal3(average_main_10 + 2.58 * std_main_10)
+	baseMiddleMaxValue1 := decimal3(average_middle_10 + 1.96  * std_middle_10)
+	baseMiddleMaxValue2 := decimal3(average_middle_10 + 2.58 * std_middle_10)
+	baseGuestMaxValue1 := decimal3(average_guest_10 + 1.96  * std_guest_10)
+	baseGuestMaxValue2 := decimal3(average_guest_10 + 2.58 * std_guest_10)
 
 	var mainFirstMax float64
 	var mainSecondMax float64
