@@ -126,7 +126,7 @@ var tmpl = template.Must(template.ParseGlob("D:/foot-master/foot-web/service/for
 
 func Index(w http.ResponseWriter, r *http.Request) {
 	db := dbConn()
-	selDB, err := db.Query("SELECT la.Id,la.MainTeamId,la.GuestTeamId,la.MatchDate,tl.Name FROM foot.t_match_his la left join t_league tl  ON la.LeagueId=tl.Id WHERE MatchDate > DATE_SUB(NOW(),INTERVAL 150 MINUTE) AND MatchDate < DATE_ADD(NOW(), INTERVAL 147 MINUTE) ORDER BY MatchDate ASC")
+	selDB, err := db.Query("SELECT la.Id,la.MainTeamId,la.GuestTeamId,la.MatchDate,tl.Name FROM foot.t_match_his la left join t_league tl  ON la.LeagueId=tl.Id WHERE MatchDate > DATE_SUB(NOW(),INTERVAL 1500 MINUTE) AND MatchDate < DATE_ADD(NOW(), INTERVAL 147 MINUTE) ORDER BY MatchDate ASC")
 	if err != nil {
 		panic(err.Error())
 	}
@@ -335,18 +335,25 @@ func HandleData(dataList []norm, matchId string,CompCount int){
 
 	page := components.NewPage()
 	page.AddCharts(
+		//lineMainMax(fruits,MainMeanAdd3Std,MainMaxAddStd,CompCount),
+		//lineMiddleMax(fruits,MiddleMeanAdd3Std,MiddleMaxAddStd,CompCount),
+		//lineGuestMax(fruits,GuestMeanAdd3Std,GuestMaxAddStd,CompCount),
 		//lineMainN(items12BetMainNorm,fruits,itemsYiMainNorm,itemsYingLiMainNorm,CompCount,itemsweideMainNorm,itemsbwinMainNorm),
 		//lineMainP(items12BetMainP,fruits,itemsYiMainP,itemsYingLiMainP,CompCount,itemsweideMainP,itemsbwinMainP),
-		lineMainAnaly(companysMain,BaseMainMaxValue1,BaseMainMaxValue2,MainFirstMax,MainSecondMax,CompCount),
-		lineMainMax(fruits,MainMeanAdd3Std,MainMaxAddStd,CompCount),
+		lineNormMaxFirst(fruits,BaseMainMaxValue1,BaseMiddleMaxValue1,BaseGuestMaxValue1,CompCount),//normdist
+		lineMaxFirst(fruits,MainFirstMax,MiddleFirstMax,GuestFirstMax,CompCount),
+		lineNormMaxSecond(fruits,BaseMainMaxValue2,BaseMiddleMaxValue2,BaseGuestMaxValue2,CompCount),//离散
+
+		//lineMainAnaly(companysMain,BaseMainMaxValue1,BaseMainMaxValue2,MainFirstMax,MainSecondMax,CompCount),
+
 		//lineMiddleN(items12BetMiddleNorm,fruits,itemsYiMiddleNorm,itemsYingLiMiddleNorm,CompCount,itemsweideMiddleNorm,itemsbwinMiddleNorm),
 		//lineMiddleP(items12BetMiddleP,fruits,itemsYiMiddleP,itemsYingLiMiddleP,CompCount,itemsweideMiddleP,itemsbwinMiddleP),
-		lineMiddleAnaly(companysMiddle,BaseMiddleMaxValue1,BaseMiddleMaxValue2,MiddleFirstMax,MiddleSecondMax,CompCount),
-		lineMiddleMax(fruits,MiddleMeanAdd3Std,MiddleMaxAddStd,CompCount),
+		//lineMiddleAnaly(companysMiddle,BaseMiddleMaxValue1,BaseMiddleMaxValue2,MiddleFirstMax,MiddleSecondMax,CompCount),
+
 		//lineGuestN(items12BetGuestNorm,fruits,itemsYiGuestNorm,itemsYingLiGuestNorm,CompCount,itemsweideGuestNorm,itemsbwinGuestNorm),
 		//lineGuestP(items12BetGuestP,fruits,itemsYiGuestP,itemsYingLiGuestP,CompCount,itemsweideGuestP,itemsbwinGuestP),
-		lineGuestAnaly(companysGuest,BaseGuestMaxValue1,BaseGuestMaxValue2,GuestFirstMax,GuestSecondMax,CompCount),
-		lineGuestMax(fruits,GuestMeanAdd3Std,GuestMaxAddStd,CompCount),
+		//lineGuestAnaly(companysGuest,BaseGuestMaxValue1,BaseGuestMaxValue2,GuestFirstMax,GuestSecondMax,CompCount),
+
 	)
 	str_name := "T-" + matchId
 	//page.PageTitle = str_name
@@ -358,6 +365,118 @@ func HandleData(dataList []norm, matchId string,CompCount int){
 		panic(err)
 	}
 	page.Render(io.MultiWriter(f))
+}
+
+func lineNormMaxFirst(fruits []string, MainMaxValue []opts.LineData,MiddleMaxValue []opts.LineData,GuestMaxValue []opts.LineData,CompCount int) *charts.Line {
+	line := charts.NewLine()
+	title := "maxNorm"+ strconv.Itoa(CompCount)
+	line.SetGlobalOptions(
+		charts.WithTitleOpts(opts.Title{
+			Title: title,
+		}),
+		charts.WithInitializationOpts(opts.Initialization{
+			Theme: "shine",
+			Width: "720px",
+			Height: "500px",
+		}),
+		charts.WithXAxisOpts(opts.XAxis{
+			AxisLabel: &opts.AxisLabel{
+				Show:         true,
+				Interval:     "0",
+				Rotate:       30,
+				ShowMinLabel: true,
+				ShowMaxLabel: true,
+			},
+		}),
+		charts.WithYAxisOpts(opts.YAxis{Scale: true,Min: "dataMin", Max: "dataMax"}),
+	)
+	line.SetXAxis(fruits).
+		AddSeries("主", MainMaxValue).
+		AddSeries("平", MiddleMaxValue).
+		AddSeries("客", GuestMaxValue).
+		SetSeriesOptions(
+			charts.WithLineChartOpts(opts.LineChart{
+				ShowSymbol: true,
+			}),
+			charts.WithLabelOpts(opts.Label{
+				Show: true,
+			}),
+		)
+	return line
+}
+func lineMaxFirst(fruits []string, MainMaxValue []opts.LineData,MiddleMaxValue []opts.LineData,GuestMaxValue []opts.LineData,CompCount int) *charts.Line {
+	line := charts.NewLine()
+	title := "最大"+ strconv.Itoa(CompCount)
+	line.SetGlobalOptions(
+		charts.WithTitleOpts(opts.Title{
+			Title: title,
+		}),
+		charts.WithInitializationOpts(opts.Initialization{
+			Theme: "shine",
+			Width: "720px",
+			Height: "500px",
+		}),
+		charts.WithXAxisOpts(opts.XAxis{
+			AxisLabel: &opts.AxisLabel{
+				Show:         true,
+				Interval:     "0",
+				Rotate:       30,
+				ShowMinLabel: true,
+				ShowMaxLabel: true,
+			},
+		}),
+		charts.WithYAxisOpts(opts.YAxis{Scale: true,Min: "dataMin", Max: "dataMax"}),
+	)
+	line.SetXAxis(fruits).
+		AddSeries("主", MainMaxValue).
+		AddSeries("平", MiddleMaxValue).
+		AddSeries("客", GuestMaxValue).
+		SetSeriesOptions(
+			charts.WithLineChartOpts(opts.LineChart{
+				ShowSymbol: true,
+			}),
+			charts.WithLabelOpts(opts.Label{
+				Show: true,
+			}),
+		)
+	return line
+}
+func lineNormMaxSecond(fruits []string, MainMaxValue []opts.LineData,MiddleMaxValue []opts.LineData,GuestMaxValue []opts.LineData,CompCount int) *charts.Line {
+	line := charts.NewLine()
+	title := "离散"+ strconv.Itoa(CompCount)
+	line.SetGlobalOptions(
+		charts.WithTitleOpts(opts.Title{
+			Title: title,
+		}),
+		charts.WithInitializationOpts(opts.Initialization{
+			Theme: "shine",
+			Width: "720px",
+			Height: "500px",
+		}),
+		charts.WithXAxisOpts(opts.XAxis{
+			AxisLabel: &opts.AxisLabel{
+				Show:         true,
+				Interval:     "0",
+				Rotate:       30,
+				ShowMinLabel: true,
+				ShowMaxLabel: true,
+			},
+		}),
+		charts.WithYAxisOpts(opts.YAxis{Scale: true,Min: "dataMin", Max: "dataMax"}),
+	)
+	line.SetXAxis(fruits).
+		AddSeries("主", MainMaxValue).
+		AddSeries("平", MiddleMaxValue).
+		AddSeries("客", GuestMaxValue).
+		SetSeriesOptions(
+			charts.WithLineChartOpts(opts.LineChart{
+				ShowSymbol: true,
+			}),
+			charts.WithLabelOpts(opts.Label{
+				Show: true,
+			}),
+		)
+	return line
 }
 
 func lineMainMax(fruits []string, MeanAdd3Std []opts.LineData,MaxAddStd []opts.LineData,CompCount int) *charts.Line {
