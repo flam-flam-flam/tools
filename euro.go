@@ -265,7 +265,7 @@ func (this *EuroLastProcesser) hdata_process(url string, hdata_str string) {
 			B365MainP = last.Ep3  //bwin
 			B365GuestP = last.Ep0
 			B365MiddleP = last.Ep1
-		} else if v.CId == 281 {
+		} else if v.CId == 659 {
 			main_10[8] = last.Ep3
 			main_9[8] = last.Ep3
 			guest_10[8] = last.Ep0
@@ -279,7 +279,7 @@ func (this *EuroLastProcesser) hdata_process(url string, hdata_str string) {
 			PrinMainP = last.Ep3
 			PrinGuestP = last.Ep0
 			PrinMiddleP = last.Ep1
-		} else if v.CId == 659 {//yingli
+		} else if v.CId == 281 {//yingli
 			IntMainP = last.Ep3
 			IntGuestP = last.Ep0
 			IntMiddleP = last.Ep1
@@ -352,12 +352,12 @@ func (this *EuroLastProcesser) hdata_process(url string, hdata_str string) {
 		continue
 	}
 
-	baseMainMaxValue1 := decimal3(average_main_10 + 1.96 * std_main_10)
-	baseMainMaxValue2 := decimal3(average_main_10 + 2.58 * std_main_10)
-	baseMiddleMaxValue1 := decimal3(average_middle_10 + 1.96  * std_middle_10)
-	baseMiddleMaxValue2 := decimal3(average_middle_10 + 2.58 * std_middle_10)
-	baseGuestMaxValue1 := decimal3(average_guest_10 + 1.96  * std_guest_10)
-	baseGuestMaxValue2 := decimal3(average_guest_10 + 2.58 * std_guest_10)
+	//baseMainMaxValue1 := decimal3(average_main_10 + 1.96 * std_main_10)
+	//baseMainMaxValue2 := decimal3(average_main_10 + 2.58 * std_main_10)
+	//baseMiddleMaxValue1 := decimal3(average_middle_10 + 1.96  * std_middle_10)
+	//baseMiddleMaxValue2 := decimal3(average_middle_10 + 2.58 * std_middle_10)
+	//baseGuestMaxValue1 := decimal3(average_guest_10 + 1.96  * std_guest_10)
+	//baseGuestMaxValue2 := decimal3(average_guest_10 + 2.58 * std_guest_10)
 
 	var mainFirstMax float64
 	var mainSecondMax float64
@@ -392,10 +392,7 @@ func (this *EuroLastProcesser) hdata_process(url string, hdata_str string) {
 		}
 	}
 
-	if(mainFirstMax < IntMainP){
-		mainFirstMax = IntMainP
-		firstFlag = 10
-	}
+	
 
 	mainMaxNameString := ""
 	if(firstFlag == 0){
@@ -415,11 +412,9 @@ func (this *EuroLastProcesser) hdata_process(url string, hdata_str string) {
 	}else if(firstFlag == 7){//255
 		mainMaxNameString = mainMaxNameString + "bwin_"
 	}else if(firstFlag == 8){//281
-		mainMaxNameString = mainMaxNameString + "365_"
+		mainMaxNameString = mainMaxNameString + "yingli_"
 	}else if(firstFlag == 9){//177
 		mainMaxNameString = mainMaxNameString + "prinn_"
-	}else if(firstFlag == 10){
-		mainMaxNameString = mainMaxNameString + "yingli_"
 	}
 
 	if(secondFlag == 0){
@@ -439,7 +434,7 @@ func (this *EuroLastProcesser) hdata_process(url string, hdata_str string) {
 	}else if(secondFlag == 7){//255
 		mainMaxNameString = mainMaxNameString + "bwin"
 	}else if(secondFlag == 8){//281
-		mainMaxNameString = mainMaxNameString + "365"
+		mainMaxNameString = mainMaxNameString + "yingli"
 	}else if(secondFlag == 9){//177
 		mainMaxNameString = mainMaxNameString + "prinn"
 	}
@@ -459,10 +454,7 @@ func (this *EuroLastProcesser) hdata_process(url string, hdata_str string) {
 			secondFlag = flag
 		}
 	}
-	if(middleFirstMax < IntMiddleP){
-		middleFirstMax = IntMiddleP
-		firstFlag = 10
-	}
+	
 
 	middleMaxNameString := ""
 	if(firstFlag == 0){
@@ -482,11 +474,9 @@ func (this *EuroLastProcesser) hdata_process(url string, hdata_str string) {
 	}else if(firstFlag == 7){//255
 		middleMaxNameString = middleMaxNameString + "bwin_"
 	}else if(firstFlag == 8){//281
-		middleMaxNameString = middleMaxNameString + "365_"
+		middleMaxNameString = middleMaxNameString + "yingli"
 	}else if(firstFlag == 9){//177
 		middleMaxNameString = middleMaxNameString + "prinn_"
-	}else if(firstFlag == 10){
-		middleMaxNameString = middleMaxNameString + "yingli_"
 	}
 
 	if(secondFlag == 0){
@@ -506,7 +496,7 @@ func (this *EuroLastProcesser) hdata_process(url string, hdata_str string) {
 	}else if(secondFlag == 7){//255
 		middleMaxNameString = middleMaxNameString + "bwin"
 	}else if(secondFlag == 8){//281
-		middleMaxNameString = middleMaxNameString + "365"
+		middleMaxNameString = middleMaxNameString + "yingli"
 	}else if(secondFlag == 9){//177
 		middleMaxNameString = middleMaxNameString + "prinn"
 	}
@@ -527,10 +517,7 @@ func (this *EuroLastProcesser) hdata_process(url string, hdata_str string) {
 		}
 	}
 
-	if(guestFirstMax < IntGuestP){
-		guestFirstMax = IntGuestP
-		firstFlag = 10
-	}
+
 
 	guestMaxNameString := ""
 	if(firstFlag == 0){
@@ -550,11 +537,9 @@ func (this *EuroLastProcesser) hdata_process(url string, hdata_str string) {
 	}else if(firstFlag == 7){//255
 		guestMaxNameString = guestMaxNameString + "bwin_"
 	}else if(firstFlag == 8){//281
-		guestMaxNameString = guestMaxNameString + "365_"
+		guestMaxNameString = guestMaxNameString + "yingli_"
 	}else if(firstFlag == 9){//177
 		guestMaxNameString = guestMaxNameString + "prinn_"
-	}else if(firstFlag == 10){
-		guestMaxNameString = guestMaxNameString + "yingli_"
 	}
 
 	if(secondFlag == 0){
@@ -574,11 +559,21 @@ func (this *EuroLastProcesser) hdata_process(url string, hdata_str string) {
 	}else if(secondFlag == 7){//255
 		guestMaxNameString = guestMaxNameString + "bwin"
 	}else if(secondFlag == 8){//281
-		guestMaxNameString = guestMaxNameString + "365"
+		guestMaxNameString = guestMaxNameString + "yingli"
 	}else if(secondFlag == 9){//177
 		guestMaxNameString = guestMaxNameString + "prinn"
 	}
 
+	
+	baseMainMaxValue1 := decimal3(normdist(mainFirstMax, average_main_10, std_main_10))
+	//baseMainMaxValue2 := decimal3(normdist(mainSecondMax, average_main_10, std_main_10))
+	baseMainMaxValue2 := decimal3(std_main_10)
+	baseMiddleMaxValue1 := decimal3(normdist(middleFirstMax, average_middle_10, std_middle_10))
+	//baseMiddleMaxValue2 := decimal3(normdist(middleSecondMax, average_middle_10, std_middle_10))
+	baseMiddleMaxValue2 := decimal3(std_middle_10)
+	baseGuestMaxValue1 := decimal3(normdist(guestFirstMax, average_guest_10, std_guest_10))
+	//baseGuestMaxValue2 := decimal3(normdist(guestSecondMax, average_guest_10, std_guest_10))
+	baseGuestMaxValue2 := decimal3(std_guest_10)
 
 	norm.MainMaxName = mainMaxNameString
 	norm.MiddleMaxName = middleMaxNameString
