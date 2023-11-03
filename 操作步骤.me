@@ -1,0 +1,7 @@
+1、import "github.com/gonum/stat"
+2、go get -u gonum.org/v1/gonum/...
+3、go mod tidy
+4、num := []float64{2.63,2.5,2.8,2.7,2.6,2.54,2.66,2.7,2.7,2.76}
+   weights := []float64{1, 1, 1, 1, 1, 1, 1, 1, 1, 1}
+   skew2 := stat.Skew(num,weights)
+   kurt2 := stat.ExKurtosis(num,weights)
