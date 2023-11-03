@@ -5,3 +5,141 @@
    weights := []float64{1, 1, 1, 1, 1, 1, 1, 1, 1, 1}
    skew2 := stat.Skew(num,weights)
    kurt2 := stat.ExKurtosis(num,weights)
+
+
+偏度skew：如果数据分布左偏，也就是数据较多地分布在右侧（较高），那么偏度系数将为负值；如果数据分布右偏，也就是数据较多地分布在左侧，那么偏度系数为正值；如果数据分布近似对称，那么偏度系数将接近于0.
+峰度kurt：如果峰度系数大于0，说明数据分布较为陡峭，峰态较高；如果数据分布的分度系数小于0,说明数据分布较为平坦。 峰度系数大，说明收益波动较大，存在较多的极端值
+
+
+
+package main
+import (
+   "fmt"
+   "math/rand"
+   "time"
+   "math"
+   "github.com/gonum/stat"
+)
+
+func main() {
+    rand.Seed(time.Now().Unix())
+	b := rand.Intn(10) + 10
+	fmt.Println("b is:", b)
+	
+   num := []float64{2.63,2.5,2.8,2.7,2.6,2.54,2.66,2.7,2.7,2.76}
+   weights := []float64{1, 1, 1, 1, 1, 1, 1, 1, 1, 1} 
+   fmt.Println("The given array2 is:", num)
+   average := mean(num)
+   aver2 := stat.Mean(num,weights)
+   
+   std := stdDev(num,average)
+   
+   
+   fmt.Println("The average of the above array is:", average)
+   fmt.Println("The aver2 of the above array is:", aver2)
+   
+   fmt.Println("The Standard Deviation2 of the above array is:", std)
+   
+   normdist1 := normdist(2.66,average,std)
+   
+   variance := variance(num,average)
+   //skew := skew(num,average ,std)
+   skew2 := stat.Skew(num,weights)
+   //kurt := kurt(num,average ,variance)
+   kurt2 := stat.ExKurtosis(num,weights)
+   fmt.Println("The variance of the above array is:", variance)
+   //fmt.Println("The skew of the above array is:", skew)
+   fmt.Println("The skew2 of the above array is:", skew2)
+   //fmt.Println("The kurt of the above array is:", kurt)
+   fmt.Println("The kurt2 of the above array is:", kurt2)
+   
+   fmt.Println("The Standard normdist1 of 2.8 is:", normdist1)
+}
+
+/*func main() {
+	x:=money(500000,60)
+	fmt.Println("after 60 years, x :", x)
+}*/
+
+func money(x float64, n int) float64{
+	if(n>1){
+		x=x*1.035-20000
+		return money(x,n-1)
+	}else{
+		return x
+	}
+}
+
+func mean(data []float64) float64{
+	sum := 0.0
+	for _, value := range data{
+		sum += value
+	}
+	
+	return sum /float64(len(data))
+}
+
+func stdDev(data []float64, mean float64) float64{
+	sum := 0.0
+	for _, value := range data{
+		sum += math.Pow(value - mean, 2)
+	}
+	
+	variance := sum / float64(len(data) -1)
+	
+	return math.Sqrt(variance)
+}
+
+func variance(data []float64, mean float64) float64{
+	sum := 0.0
+	for _, value := range data{
+		sum += math.Pow(value - mean, 2)
+	}
+	
+	variance := sum / float64(len(data)-1)
+	
+	return variance
+}
+
+func normdist(x float64, mean float64, stdev float64) float64{
+	x=(x-mean)/stdev
+	var res float64
+	if (x == 0){
+		res=0.5;
+	}else{
+		oor2pi := 1/(math.Sqrt(float64(2) * 3.14159265358979323846));
+		t := 1 / (float64(1) + 0.2316419 * math.Abs(x));
+		t = t*oor2pi * math.Exp(-0.5 * x * x)* (0.31938153 + t * (-0.356563782 + t* (1.781477937 + t* (-1.821255978 + t * 1.330274429))));
+		if(x>=0){
+			res = float64(1) - t;
+		}else{
+			res = t;
+		}
+	}
+	return res;
+}
+
+
+func skew(data []float64,average float64,std float64) float64{
+	skew := 0.0
+	
+	for _,value := range data{
+		skew += math.Pow(value - average, 3)/math.Pow(std,3);
+	}
+	skew /= float64(len(data)-1)
+	return skew
+}
+
+func kurt(data []float64,mean float64,variance float64) float64{
+	var x float64
+	x = 0
+	for _,value := range data{
+		y := value - mean
+		y = math.Pow(y, 4)
+		x = x + y
+	}
+	x = x/float64(len(data))
+	return (x/math.Pow(variance,2)) - 3;
+}
+
+
