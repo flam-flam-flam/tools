@@ -23,6 +23,12 @@ JB检验的统计量定义为 ：JB=n/6（s平方+ 1/4(k-3)平方）
 https://blog.51cto.com/u_16099329/6967159
 https://blog.51cto.com/u_16099329/6967159
 
+
+6、正态检验
+//偏度标准误差 (Standard Error of Skewness). 偏态与其标准误差的比率可用作正态检验（即，如果该比率小于 -2 或大于 -2，则可以拒绝正态）。偏度正值越大表示长尾向右越长；负极值表示向左的长尾。
+//峰度标准误差 (Standard Error of Kurtosis). 峰度与其标准误差的比率可用作正态检验（即如果比率小于 -2 或大于 +2，则可以拒绝正态）。峰度较大的正值表示该分布的尾部比正态分布的尾部长；峰度的负值表示较短的尾部（与箱形均匀分布的尾部变得相似）。
+//stat.StdErr(stat.StdDev(mains,weights),10)
+
 package main
 import (
    "fmt"
