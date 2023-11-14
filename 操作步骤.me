@@ -50,8 +50,9 @@ go mod tidy
 
 10、概率密度---https://blog.csdn.net/wfkzzz/article/details/122463183
 var normal = distuv.Normal{Mu: aver2, Sigma: std2}
-   score := normal.CDF(float64(3.31))
-	fmt.Printf("score:%v\n", score) //累计
+   score := normal.CDF(float64(3.31))//累计
+prob := normal.Prob(float64(3.31)//密度
+	fmt.Printf("score:%v\n", score) 
 
 
 
