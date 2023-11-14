@@ -37,13 +37,22 @@ https://blog.51cto.com/u_16099329/6967159
 
 8、排序=SORT(A2:E10,5,-1,FALSE) 第五列降序按行 ctrl+shift+enter
 
-package main
+9、confidence-https://github.com/gonum/plot/tree/342a5cee2153b051d94ae813861f9436c5584de2
+下载golang1.20.11，设置环境变量GOROOT-C:\Program Files\Go； PATH
+下载git，设置环境变量
+goland变量色值，time注释
+
+go get -u gonum.org/v1/plot/...
+go mod tidy
+
+  package main
 import (
    "fmt"
    "math/rand"
    "time"
    "math"
    "github.com/gonum/stat"
+   "gonum.org/v1/plot/plotutil"
 )
 
 func main() {
@@ -51,7 +60,7 @@ func main() {
 	b := rand.Intn(10) + 10
 	fmt.Println("b is:", b)
 	
-   num := []float64{2.63,2.5,2.8,2.7,2.6,2.54,2.66,2.7,2.7,2.76}
+   num := []float64{3.7 ,3.2 ,3.5 ,3.5 ,3.7 ,3.56 ,3.45 ,3.4 ,3.35 ,3.66 }
    weights := []float64{1, 1, 1, 1, 1, 1, 1, 1, 1, 1} 
    fmt.Println("The given array2 is:", num)
    average := mean(num)
@@ -78,6 +87,8 @@ func main() {
    //fmt.Println("The kurt of the above array is:", kurt)
    fmt.Println("The kurt2 of the above array is:", kurt2)
    
+   mean2, conf, conf2 := plotutil.MeanAndConf95(num)
+   fmt.Println("The confidence of the above array is:", mean2, " _ ", conf, " _ ",conf2," _ ")
    fmt.Println("The Standard normdist1 of 2.8 is:", normdist1)
 }
 
@@ -166,5 +177,4 @@ func kurt(data []float64,mean float64,variance float64) float64{
 	x = x/float64(len(data))
 	return (x/math.Pow(variance,2)) - 3;
 }
-
 
